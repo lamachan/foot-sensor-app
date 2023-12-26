@@ -12,7 +12,7 @@ def fetch_and_store_data():
         try:
             for i in range(1,7):
                 # Make a request to the website to fetch data
-                response = requests.get(f'http://tesla.iem.pw.edu.pl:9080/v2/monitor/{i}')
+                response = requests.get(f'http://tesla.iem.pw.edu.pl:9080/v2/monitor/{i}', timeout=1)
                 
                 # Extract the data from the response (assuming JSON format here)
                 data = response.json()
@@ -26,6 +26,9 @@ def fetch_and_store_data():
             
             # Wait for 1 second before fetching data again
             time.sleep(1)
+        except requests.Timeout as e:
+            print(f'Timeout for patient {i}: {e}')
+            time.sleep(0.01)
         except Exception as e:
             print(f"Error fetching and storing data for patient {i}: {e}")
             # If an error occurs, wait for 1 second before retrying
