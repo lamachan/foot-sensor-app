@@ -14,7 +14,14 @@ df = pd.DataFrame(columns='birthdate disabled firstname id lastname trace_id nam
 
 # Define Dash layout
 app.layout = html.Div([
-    dcc.Graph(id='live-graph'),
+    dcc.Graph(
+        id='L0-live-graph',
+        style={'width': '50%', 'height': '400px'}
+    ),
+    dcc.Graph(
+        id='L1-live-graph',
+        style={'width': '50%', 'height': '400px'}
+    ),
     dcc.Interval(
         id='interval-component',
         interval=1*1000,  # in milliseconds
@@ -24,13 +31,14 @@ app.layout = html.Div([
 
 # Update graph with fetched data
 @app.callback(
-    dash.dependencies.Output('live-graph', 'figure'),
+    [dash.dependencies.Output('L0-live-graph', 'figure'),
+    dash.dependencies.Output('L1-live-graph', 'figure')],
     [dash.dependencies.Input('interval-component', 'n_intervals')]
 )
-def update_graph(n):
+def update_graphs(n):
     global df
     # Fetch the stored data from Redis
-    latest_data = redis_client.lindex('my_data_list', -1)
+    latest_data = redis_client.lindex('patient-1-data', -1)
 
     row_json = json.loads(latest_data)
 
@@ -44,29 +52,50 @@ def update_graph(n):
 
     print(df)
 
-    # Create x and y coordinates for the line graph
-    x = df.index  # Use DataFrame index as x-axis
-    y = df['L0']
+# Create x and y coordinates for the L0 and L1 line graphs
+    x = (df.index + 1) / 60  # Use DataFrame index as x-axis
+    y_l0 = df['L0']
+    y_l1 = df['L1']
 
-    # Create a Plotly trace for the line graph
-    trace = go.Scatter(
+    # Create a Plotly trace for L0 and L1 line graphs
+    trace_l0 = go.Scatter(
         x=x,
-        y=y,
-        mode='lines'
+        y=y_l0,
+        mode='lines',
+        name='L0'
+    )
+    trace_l1 = go.Scatter(
+        x=x,
+        y=y_l1,
+        mode='lines',
+        name='L1'
     )
 
-    # Define the layout for the graph
-    layout = go.Layout(
-        title='Real-time Data Graph',
+    # Define the layout for L0 and L1 graphs
+    layout_l0 = go.Layout(
+        title='L0',
         xaxis=dict(
-            title='Time'
+            title='Time [min.]'
         ),
         yaxis=dict(
             title='Value'
         )
     )
 
-    return {'data': [trace], 'layout': layout}
+    layout_l1 = go.Layout(
+        title='L1',
+        xaxis=dict(
+            title='Time [min.]'
+        ),
+        yaxis=dict(
+            title='Value'
+        )
+    )
+
+    return (
+        {'data': [trace_l0], 'layout': layout_l0},
+        {'data': [trace_l1], 'layout': layout_l1}
+    )
 
 if __name__ == '__main__':
     app.run_server(debug=True)
