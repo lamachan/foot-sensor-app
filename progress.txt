@@ -1,0 +1,16 @@
+done:
+* redis data fetching
+* multiple sensors
+* multiple patients
+* patient info
+* line graphs for all sensors
+
+problems:
+* timeouts during fetching data
+* duplicate data (by trace id)
+* missing data points (by trace id)
+
+to do:
+* custom component
+* fetching ready data from redis at app start (more that just 1 row) [MAYBE]
+* nice layout
