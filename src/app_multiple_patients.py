@@ -100,12 +100,15 @@ def update_graph(n, pathname):
     row_json = fetch_data(patient_id)
 
     if row_json:
-        row_list = [row_json['birthdate'], row_json['disabled'], row_json['firstname'], row_json['id'], row_json['lastname'], row_json['trace']['id'], row_json['trace']['name']] + [s['anomaly'] for idx, s in enumerate(row_json['trace']['sensors'])] + [s['value'] for idx, s in enumerate(row_json['trace']['sensors'])]
-        row_df = pd.DataFrame([row_list], columns='birthdate disabled firstname id lastname trace_id name anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
+        # row_list = [row_json['birthdate'], row_json['disabled'], row_json['firstname'], row_json['id'], row_json['lastname'], row_json['trace']['id'], row_json['trace']['name']] + [s['anomaly'] for idx, s in enumerate(row_json['trace']['sensors'])] + [s['value'] for idx, s in enumerate(row_json['trace']['sensors'])]
+        # row_df = pd.DataFrame([row_list], columns='birthdate disabled firstname id lastname trace_id name anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
+        row_list = [row_json['firstname'], row_json['lastname'], row_json['trace']['id']] + [s['anomaly'] for s in row_json['trace']['sensors']] + [s['value'] for s in row_json['trace']['sensors']]
+        row_df = pd.DataFrame([row_list], columns='firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
 
         if patient_id not in patient_data:
             print('CREATING NEW DF!')
-            patient_data[patient_id] = pd.DataFrame(columns='birthdate disabled firstname id lastname trace_id name anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
+            # patient_data[patient_id] = pd.DataFrame(columns='birthdate disabled firstname id lastname trace_id name anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
+            patient_data[patient_id] = pd.DataFrame(columns='firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())    
 
         df = patient_data[patient_id]
         df = pd.concat([df, row_df], ignore_index=True)
@@ -115,14 +118,44 @@ def update_graph(n, pathname):
         patient_data[patient_id] = df
         print(df)
 
+        # updated_figures = []
+        # Loop through the column names to update each graph
+        # for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
+        #     # Create a new figure for each graph using the data from the respective column
+        #     fig = {
+        #         'data': [
+        #             {'x': df.index, 'y': df[sensor], 'type': 'line', 'name': sensor}
+        #         ],
+        #         'layout': {
+        #             'title': f'{sensor} - Patient {patient_id}',
+        #             'xaxis': dict(title='Time'),
+        #             'yaxis': dict(title='Value'),
+        #             'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},  # Adjust margins
+        #             'height': 200  # Adjust height of the graph
+        #         }
+        #     }
+            
+        #     # Append the updated figure to the list
+        #     updated_figures.append(fig)
         updated_figures = []
 
         # Loop through the column names to update each graph
         for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
-            # Create a new figure for each graph using the data from the respective column
+            # Filter anomaly data where anomaly is True
+            anomaly_indices = df[df[f'anomaly_{sensor}'] == True].index.tolist()
+            
             fig = {
                 'data': [
-                    {'x': df.index, 'y': df[sensor], 'type': 'line', 'name': sensor}
+                    {'x': df.index,
+                    'y': df[sensor],
+                    'type': 'line',
+                    'name': f'{sensor} (Normal)'},
+                    {'x': anomaly_indices,
+                    'y': df.loc[anomaly_indices, sensor],
+                    'type': 'scatter',
+                    'mode': 'lines',
+                    'name': f'{sensor} (Anomaly)',
+                    'line': {'color': 'red', 'width': 2}}
                 ],
                 'layout': {
                     'title': f'{sensor} - Patient {patient_id}',
@@ -132,9 +165,9 @@ def update_graph(n, pathname):
                     'height': 200  # Adjust height of the graph
                 }
             }
-            
-            # Append the updated figure to the list
+
             updated_figures.append(fig)
+
 
         # Return all updated figures for the graphs
         return updated_figures

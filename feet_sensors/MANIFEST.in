@@ -1,0 +1,11 @@
+include feet_sensors/feet_sensors.min.js
+include feet_sensors/feet_sensors.min.js.map
+include feet_sensors/async-*.js
+include feet_sensors/async-*.js.map
+include feet_sensors/*-shared.js
+include feet_sensors/*-shared.js.map
+include feet_sensors/metadata.json
+include feet_sensors/package-info.json
+include README.md
+include LICENSE
+include package.json
