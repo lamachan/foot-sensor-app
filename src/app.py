@@ -118,27 +118,7 @@ def update_graph(n, pathname):
         patient_data[patient_id] = df
         print(df)
 
-        # updated_figures = []
-        # Loop through the column names to update each graph
-        # for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
-        #     # Create a new figure for each graph using the data from the respective column
-        #     fig = {
-        #         'data': [
-        #             {'x': df.index, 'y': df[sensor], 'type': 'line', 'name': sensor}
-        #         ],
-        #         'layout': {
-        #             'title': f'{sensor} - Patient {patient_id}',
-        #             'xaxis': dict(title='Time'),
-        #             'yaxis': dict(title='Value'),
-        #             'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},  # Adjust margins
-        #             'height': 200  # Adjust height of the graph
-        #         }
-        #     }
-            
-        #     # Append the updated figure to the list
-        #     updated_figures.append(fig)
         updated_figures = []
-
         # Loop through the column names to update each graph
         for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
             # Filter anomaly data where anomaly is True
@@ -165,9 +145,7 @@ def update_graph(n, pathname):
                     'height': 200  # Adjust height of the graph
                 }
             }
-
             updated_figures.append(fig)
-
 
         # Return all updated figures for the graphs
         return updated_figures
