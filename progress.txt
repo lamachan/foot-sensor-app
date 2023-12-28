@@ -4,6 +4,7 @@ done:
 * multiple patients
 * patient info
 * line graphs for all sensors
+* pages
 * custom component boilerplate
 * custom component circles (changing colours and sizes)
 
@@ -16,6 +17,5 @@ to do:
 * custom component feet diagram
 * fetching ready data from redis at app start (more that just 1 row) [MAYBE]
 * nice layout
-* pages in dash
 * anomaly history
 * homepages
