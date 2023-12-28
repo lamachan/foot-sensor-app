@@ -4,6 +4,11 @@ import redis
 import json
 import pandas as pd
 
+def title(patient_id=None):
+    return f'Patient {patient_id}'
+
+dash.register_page(__name__, path_template='/current/<patient_id>', title=title)
+
 # Initialize Redis connection
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
@@ -11,8 +16,6 @@ redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 patient_data = {}
 
 REGISTERED_PATIENTS = ['1', '2', '3', '4', '5', '6']
-
-dash.register_page(__name__, path_template="/current/<patient_id>")
 
 def layout(patient_id=None):
     if patient_id not in REGISTERED_PATIENTS:
