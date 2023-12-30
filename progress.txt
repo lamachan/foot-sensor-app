@@ -7,6 +7,7 @@ done:
 * pages
 * custom component boilerplate
 * custom component circles (changing colours and sizes)
+* anomaly history for 1 patient
 
 problems:
 * timeouts during fetching data
@@ -14,8 +15,8 @@ problems:
 * missing data points (by trace id)
 
 to do:
+* anomaly history for concurrent patients
 * custom component feet diagram
 * fetching ready data from redis at app start (more that just 1 row) [MAYBE]
 * nice layout
-* anomaly history
 * homepages

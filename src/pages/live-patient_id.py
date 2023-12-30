@@ -132,7 +132,6 @@ def update_graph(n, pathname):
                     'y': df[sensor],
                     'type': 'scatter',
                     'mode': 'lines',
-                    # 'type': 'line',
                     'name': f'{sensor} (Normal)'},
                     {'x': anomaly_indices,
                     'y': df.loc[anomaly_indices, sensor],
