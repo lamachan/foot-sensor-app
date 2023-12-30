@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 import requests
 import redis
 import json
@@ -26,6 +27,20 @@ def fetch_and_store_data():
                 
                 # Trim the list to keep only the last 600 elements (10 minutes worth of data)
                 redis_client.ltrim(f'patient-{i}-data', -600, -1)
+
+                # TODO - anomalies
+                anomalies = [s['anomaly'] for s in data['trace']['sensors']]
+                # print(anomalies)
+                if any(anomalies):
+                    anomaly_data = {'timestamp': str(datetime.now()), 'data': data}
+                    # print(anomaly_data)
+                    redis_client.rpush(f'patient-{i}-anomalies', json.dumps(anomaly_data))
+
+                    # anomaly_data_fetched = redis_client.lindex(f'patient-{i}-anomalies', -1)
+                    # if anomaly_data_fetched:
+                    #     anomaly_data_dict = json.loads(anomaly_data_fetched)
+                    #     print(anomaly_data_dict)
+
             except requests.Timeout as e:
                 print(f'Timeout for patient {i}: {e}')
                 time.sleep(0.01)

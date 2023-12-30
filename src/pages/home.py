@@ -7,7 +7,10 @@ layout = html.Div([
     html.H1('Homepage'),
     html.Div([
         html.Div(
-            dcc.Link('Current sensor measurements', href='/current')
+            dcc.Link('Live sensor measurements', href='/live')
+        ),
+        html.Div(
+            dcc.Link('Last anomaly sensor measurements', href='/history')
         )
     ])
 ])

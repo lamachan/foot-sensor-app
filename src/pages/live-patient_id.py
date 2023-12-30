@@ -5,9 +5,9 @@ import json
 import pandas as pd
 
 def title(patient_id=None):
-    return f'Patient {patient_id}'
+    return f'Patient {patient_id} - live'
 
-dash.register_page(__name__, path_template='/current/<patient_id>', title=title)
+dash.register_page(__name__, path_template='/live/<patient_id>', title=title)
 
 # Initialize Redis connection
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
