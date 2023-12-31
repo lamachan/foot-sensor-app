@@ -4,8 +4,6 @@ import redis
 import json
 import pandas as pd
 
-# TODO - seperate df and current_streak_id for each patient + State url callback?
-
 def title(patient_id=None):
     return f'Patient {patient_id} - history'
 
@@ -15,9 +13,8 @@ dash.register_page(__name__, path_template='/history/<patient_id>', title=title)
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 # Dictionary to store DataFrames for each patient
-# patient_data = {}
-current_streak_id = 1
-df = pd.DataFrame()
+patient_data = {}
+current_streak_id = {}
 
 REGISTERED_PATIENTS = ['1', '2', '3', '4', '5', '6']
 
@@ -36,15 +33,30 @@ def layout(patient_id=None):
     ])
     
 def load_patient_data(patient_id):
-    global df
+    global patient_data
+    global current_streak_id
+
     data = fetch_anomaly_data(patient_id)
     
     if data:
-        row_list = [[data[i]['streak_id'], data[i]['timestamp'], data[i]['data']['firstname'], data[i]['data']['lastname'], data[i]['data']['trace']['id']] + [s['value'] for s in data[i]['data']['trace']['sensors']] for i in range(len(data))]
-        df = pd.DataFrame(row_list, columns='streak_id timestamp firstname lastname trace_id L0 L1 L2 R0 R1 R2'.split())
-        print(df)
+        row_list = [
+            [
+                row['streak_id'],
+                row['timestamp'].split()[0],
+                row['timestamp'].split()[1].split('.')[0],
+                row['data']['firstname'],
+                row['data']['lastname'],
+                row['data']['trace']['id']
+            ] + [s['value'] for s in row['data']['trace']['sensors']]
+            for row in data
+        ]
+        patient_data[patient_id] = pd.DataFrame(row_list, columns='streak_id date time firstname lastname trace_id L0 L1 L2 R0 R1 R2'.split())
+        print(patient_data[patient_id])
+        current_streak_id[patient_id] = 1
         
         return html.Div([
+            dcc.Location(id='url', refresh=False),
+
             html.Div([
                 html.H3(f"Patient ID: {patient_id}"),
                 html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
@@ -104,42 +116,56 @@ def fetch_anomaly_data(patient_id):
     Output('R1-anomaly-graph', 'figure'),
     Output('R2-anomaly-graph', 'figure')],
     [Input('prev-button', 'n_clicks'), Input('next-button', 'n_clicks')],
-    [State('L0-anomaly-graph', 'figure')]
+    [State('L0-anomaly-graph', 'figure'),
+    State('url', 'pathname')]
 )
-def update_graph(prev_clicks, next_clicks, figure):
+def update_graph(prev_clicks, next_clicks, figure, pathname):
     global current_streak_id  # Using a global variable to track current streak_id
-    global df
+    global patient_data
+
+    patient_id = pathname.split('/')[-1]
+    df = patient_data[patient_id]
 
     # Determine which button was clicked and adjust the streak_id accordingly
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     max_streak_id = df['streak_id'].max()
 
     if 'prev-button' in changed_id:
-        current_streak_id = max(1, current_streak_id - 1)
+        current_streak_id[patient_id] = max(1, current_streak_id[patient_id] - 1)
     elif 'next-button' in changed_id:
-        current_streak_id = min(max_streak_id, current_streak_id + 1)
+        current_streak_id[patient_id] = min(max_streak_id, current_streak_id[patient_id] + 1)
 
     # Fetch data based on the updated streak_id from your dataframe (df)
     # Modify this part according to how your data is structured
-    streak_data = df[df['streak_id'] == current_streak_id]
+    streak_data = df[df['streak_id'] == current_streak_id[patient_id]]
     print(streak_data)
 
     updated_figures = []
     # Loop through the column names to update each graph
     for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
         fig = {
-            'data': [
-                {'x': streak_data.index,
+            'data': [{
+                'x': streak_data['time'],
                 'y': streak_data[sensor],
                 'type': 'scatter',
                 'mode': 'lines',
                 'name': f'{sensor} (Anomaly)',
-                'line': {'color': 'red', 'width': 2}}
-            ],
+                'line': {'color': 'red', 'width': 2},
+                'showlegend': False
+            }],
             'layout': {
                 'title': f'{sensor}',
-                'xaxis': dict(title='Time'),
-                'yaxis': dict(title='Value', range=[0,1100]),
+                'xaxis': dict(
+                        title='Time',
+                        tickangle=45,
+                        tickmode='auto',
+                        nticks=10,
+                        tickfont=dict(size=8)
+                    ),
+                'yaxis': dict(
+                    title='Value',
+                    range=[0,1100]
+                ),
                 'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},
                 'height': 200
             }

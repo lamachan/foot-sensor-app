@@ -34,10 +34,10 @@ def fetch_and_store_data():
                 
                 # Extract the data from the response (assuming JSON format here)
                 data = response.json()
-                # print(data['trace']['id'])
+                timestamped_data = {'time': str(datetime.now().strftime('%H:%M:%S')), 'data': data}
                 
                 # Store the data in a Redis list (right-push)
-                redis_client.rpush(f'patient-{i}-data', json.dumps(data))
+                redis_client.rpush(f'patient-{i}-data', json.dumps(timestamped_data))
                 # print(f'Patient {i} fetched')
                 
                 # Trim the list to keep only the last 600 elements (10 minutes worth of data)

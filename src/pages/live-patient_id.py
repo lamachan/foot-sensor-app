@@ -71,9 +71,9 @@ def update_patient_info(patient_id):
     if row_json:
         return html.Div([
             html.H3(f"Patient ID: {patient_id}"),
-            html.P(f"Name: {row_json['firstname']} {row_json['lastname']}"),
-            html.P(f"Birth year: {row_json['birthdate']}"),
-            html.P(f"Disability: {row_json['disabled']}")
+            html.P(f"Name: {row_json['data']['firstname']} {row_json['data']['lastname']}"),
+            html.P(f"Birth year: {row_json['data']['birthdate']}"),
+            html.P(f"Disability: {row_json['data']['disabled']}")
         ])
     else:
         return html.Div("Patient information not found.")
@@ -102,15 +102,20 @@ def update_graph(n, pathname):
     row_json = fetch_data(patient_id)
 
     if row_json:
-        # row_list = [row_json['birthdate'], row_json['disabled'], row_json['firstname'], row_json['id'], row_json['lastname'], row_json['trace']['id'], row_json['trace']['name']] + [s['anomaly'] for idx, s in enumerate(row_json['trace']['sensors'])] + [s['value'] for idx, s in enumerate(row_json['trace']['sensors'])]
-        # row_df = pd.DataFrame([row_list], columns='birthdate disabled firstname id lastname trace_id name anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
-        row_list = [row_json['firstname'], row_json['lastname'], row_json['trace']['id']] + [s['anomaly'] for s in row_json['trace']['sensors']] + [s['value'] for s in row_json['trace']['sensors']]
-        row_df = pd.DataFrame([row_list], columns='firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
+        row_list = [
+            row_json['time'],
+            row_json['data']['firstname'],
+            row_json['data']['lastname'],
+            row_json['data']['trace']['id']
+        ] + [
+            s['anomaly'] for s in row_json['data']['trace']['sensors']
+        ] + [
+            s['value'] for s in row_json['data']['trace']['sensors']
+        ]
+        row_df = pd.DataFrame([row_list], columns='time firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
 
         if patient_id not in patient_data:
-            print('CREATING NEW DF!')
-            # patient_data[patient_id] = pd.DataFrame(columns='birthdate disabled firstname id lastname trace_id name anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
-            patient_data[patient_id] = pd.DataFrame(columns='firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())    
+            patient_data[patient_id] = pd.DataFrame(columns='time firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())    
 
         df = patient_data[patient_id]
         df = pd.concat([df, row_df], ignore_index=True)
@@ -128,22 +133,36 @@ def update_graph(n, pathname):
             
             fig = {
                 'data': [
-                    {'x': df.index,
-                    'y': df[sensor],
-                    'type': 'scatter',
-                    'mode': 'lines',
-                    'name': f'{sensor} (Normal)'},
-                    {'x': anomaly_indices,
-                    'y': df.loc[anomaly_indices, sensor],
-                    'type': 'scatter',
-                    'mode': 'lines',
-                    'name': f'{sensor} (Anomaly)',
-                    'line': {'color': 'red', 'width': 2}}
+                    {
+                        'x': df['time'],
+                        'y': df[sensor],
+                        'type': 'scatter',
+                        'mode': 'lines',
+                        'name': f'{sensor} (Normal)',
+                        'showlegend': False
+                    }, {
+                        'x': df.loc[anomaly_indices, 'time'],
+                        'y': df.loc[anomaly_indices, sensor],
+                        'type': 'scatter',
+                        'mode': 'lines',
+                        'name': f'{sensor} (Anomaly)',
+                        'line': {'color': 'red', 'width': 2},
+                        'showlegend': False
+                    }
                 ],
                 'layout': {
                     'title': f'{sensor}',
-                    'xaxis': dict(title='Time'),
-                    'yaxis': dict(title='Value', range=[0,1100]),
+                    'xaxis': dict(
+                        title='Time',
+                        tickangle=45,
+                        tickmode='auto',
+                        nticks=10,
+                        tickfont=dict(size=8)
+                    ),
+                    'yaxis': dict(
+                        title='Value',
+                        range=[0,1100]
+                    ),
                     'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},
                     'height': 200
                 }
