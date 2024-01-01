@@ -21,4 +21,4 @@ to do:
 * nice layout (homepages, patient pages)
 * docker
 * documentation (user manual + architecture description)
-* report (design)
+* report (design - NOTION)
