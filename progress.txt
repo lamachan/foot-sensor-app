@@ -16,7 +16,9 @@ problems:
 * missing data points (by trace id)
 
 to do:
-* custom component feet diagram
-* fetching ready data from redis at app start (more that just 1 row) [MAYBE]
-* nice layout
-* homepages
+* custom component feet diagram (draw feet image, import feet image, place circles in the right places)
+* fetching ready data from redis at app start (more that just 1 row) [MAYBE - CONSULT WITH SZMURŁO]
+* nice layout (homepages, patient pages)
+* docker
+* documentation (user manual + architecture description)
+* report (design)
