@@ -177,30 +177,66 @@ def update_graph(n, pathname):
         patient_data[patient_id] = df
         print(df)
 
+        # create updated figures for each sensor
         updated_figures = []
-        # Loop through the column names to update each graph
         for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
-            # Filter anomaly data where anomaly is True
+            all_data_trace = {
+                                'x': df['time'],
+                                'y': df[sensor],
+                                'type': 'scatter',
+                                'mode': 'lines',
+                                'name': f'{sensor} (Normal)',
+                                'showlegend': False
+                            }
+
             anomaly_indices = df[df[f'anomaly_{sensor}'] == True].index.tolist()
+            anomaly_traces = []
+
+            if anomaly_indices:
+                # find and seperate anomaly streaks
+                streaks = []
+                current_streak = []
+                for i in range(len(anomaly_indices) - 1):
+                    if anomaly_indices[i + 1] - anomaly_indices[i] == 1:
+                        current_streak.append(anomaly_indices[i])
+                    else:
+                        current_streak.append(anomaly_indices[i])
+                        streaks.append(current_streak)
+                        current_streak = []
+                current_streak.append(anomaly_indices[-1])
+                streaks.append(current_streak)
+
+                # create a trace for each anomaly streak
+                for streak in streaks:
+                    trace = {
+                                'x': df.loc[streak, 'time'],
+                                'y': df.loc[streak, sensor],
+                                'type': 'scatter',
+                                'mode': 'lines',
+                                'name': f'{sensor} (Anomaly)',
+                                'line': {'color': 'red', 'width': 2},
+                                'showlegend': False
+                            }
+                    anomaly_traces.append(trace)
             
             fig = {
-                'data': [
-                    {
-                        'x': df['time'],
-                        'y': df[sensor],
-                        'type': 'scatter',
-                        'mode': 'lines',
-                        'name': f'{sensor} (Normal)',
-                        'showlegend': False
-                    }, {
-                        'x': df.loc[anomaly_indices, 'time'],
-                        'y': df.loc[anomaly_indices, sensor],
-                        'type': 'scatter',
-                        'mode': 'lines',
-                        'name': f'{sensor} (Anomaly)',
-                        'line': {'color': 'red', 'width': 2},
-                        'showlegend': False
-                    }
+                'data': [all_data_trace, *anomaly_traces
+                    # {
+                    #     'x': df['time'],
+                    #     'y': df[sensor],
+                    #     'type': 'scatter',
+                    #     'mode': 'lines',
+                    #     'name': f'{sensor} (Normal)',
+                    #     'showlegend': False
+                    # }, {
+                    #     'x': df.loc[anomaly_indices, 'time'],
+                    #     'y': df.loc[anomaly_indices, sensor],
+                    #     'type': 'scatter',
+                    #     'mode': 'lines',
+                    #     'name': f'{sensor} (Anomaly)',
+                    #     'line': {'color': 'red', 'width': 2},
+                    #     'showlegend': False
+                    # }
                 ],
                 'layout': {
                     'title': f'{sensor}',
@@ -221,7 +257,6 @@ def update_graph(n, pathname):
             }
             updated_figures.append(fig)
 
-        # Return all updated figures for the graphs
         return updated_figures
     else:
         return [{'data': [], 'layout': {}}] * 6

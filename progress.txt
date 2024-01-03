@@ -9,12 +9,12 @@ done:
 * custom component circles (changing colours and sizes)
 * anomaly history for 1 patient* anomaly history for concurrent patients
 * timestamped data
+* anomaly streak separation in live data
 
 problems:
 * timeouts during fetching data
 * duplicate data (by trace id)
 * missing data points (by trace id)
-* anomaly streak separation in live data
 * anomaly history streak order (buttons)
 
 to do:
