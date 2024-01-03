@@ -14,6 +14,8 @@ problems:
 * timeouts during fetching data
 * duplicate data (by trace id)
 * missing data points (by trace id)
+* anomaly streak separation in live data
+* anomaly history streak order (buttons)
 
 to do:
 * custom component feet diagram (draw feet image, import feet image, place circles in the right places)

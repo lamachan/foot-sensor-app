@@ -4,7 +4,7 @@ import requests
 import redis
 import json
 
-# Initialize Redis connection
+# initialize Redis database
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 # redis_client.flushdb()
 next_anomaly_streak_id = list(range(6))
@@ -23,26 +23,21 @@ for i in range(1,7):
 print(next_anomaly_streak_id)
 print(previous_anomaly)
 
-# Function to fetch data from a website and store it in Redis
+# fetching live and anomaly data from the API for all 6 patients
 def fetch_and_store_data():
     while True:
-        # print(f'Time before fetch: {time.time()}')
         for i in range(1,7):
             try:
-                # Make a request to the website to fetch data
                 response = requests.get(f'http://tesla.iem.pw.edu.pl:9080/v2/monitor/{i}', timeout=0.1)
                 
-                # Extract the data from the response (assuming JSON format here)
                 data = response.json()
                 timestamped_data = {'time': str(datetime.now().strftime('%H:%M:%S')), 'data': data}
                 
-                # Store the data in a Redis list (right-push)
+                # store 10 minutes of live data in a redis list 'patient-[idx]-data'
                 redis_client.rpush(f'patient-{i}-data', json.dumps(timestamped_data))
-                # print(f'Patient {i} fetched')
-                
-                # Trim the list to keep only the last 600 elements (10 minutes worth of data)
                 redis_client.ltrim(f'patient-{i}-data', -600, -1)
 
+                # detect anomaly streak and store it with the correct streak_id in a redis list 'patient-[idx]-anomalies'
                 anomalies = [s['anomaly'] for s in data['trace']['sensors']]
                 if any(anomalies):
                     if not previous_anomaly[i-1]:
@@ -61,11 +56,8 @@ def fetch_and_store_data():
                 time.sleep(0.01)
             except Exception as e:
                 print(f"Error fetching and storing data for patient {i}: {e}")
-                # If an error occurs, wait for 1 second before retrying
                 time.sleep(1)
-        # print(f'Time after fetch: {time.time()}')
-        # Wait for 1 second before fetching data again
+        # wait for less than a second (about 1 s including the fetching) for the next fetch
         time.sleep(0.8)
        
-# Start fetching and storing data in Redis
 fetch_and_store_data()
