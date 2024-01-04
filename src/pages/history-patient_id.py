@@ -52,7 +52,7 @@ def load_patient_data(patient_id):
         ]
         patient_data[patient_id] = pd.DataFrame(row_list, columns='streak_id date time firstname lastname trace_id L0 L1 L2 R0 R1 R2'.split())
         print(patient_data[patient_id])
-        current_streak_id[patient_id] = 1
+        current_streak_id[patient_id] = patient_data[patient_id]['streak_id'].max()
         
         return html.Div([
             dcc.Location(id='url', refresh=False),
@@ -62,8 +62,8 @@ def load_patient_data(patient_id):
                 html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
                 html.P(f"Birth year: {data[0]['data']['birthdate']}"),
                 html.P(f"Disability: {data[0]['data']['disabled']}"),
-                html.Button('Prev', id='prev-button', n_clicks=0),
-                html.Button('Next', id='next-button', n_clicks=0)
+                html.Button('Newer', id='newer-button', n_clicks=0),
+                html.Button('Older', id='older-button', n_clicks=0)
             ]),
             html.Div([
                 dcc.Graph(
@@ -115,7 +115,7 @@ def fetch_anomaly_data(patient_id):
     Output('R0-anomaly-graph', 'figure'),
     Output('R1-anomaly-graph', 'figure'),
     Output('R2-anomaly-graph', 'figure')],
-    [Input('prev-button', 'n_clicks'), Input('next-button', 'n_clicks')],
+    [Input('newer-button', 'n_clicks'), Input('older-button', 'n_clicks')],
     [State('L0-anomaly-graph', 'figure'),
     State('url', 'pathname')]
 )
@@ -130,10 +130,10 @@ def update_graph(prev_clicks, next_clicks, figure, pathname):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
     max_streak_id = df['streak_id'].max()
 
-    if 'prev-button' in changed_id:
-        current_streak_id[patient_id] = max(1, current_streak_id[patient_id] - 1)
-    elif 'next-button' in changed_id:
+    if 'newer-button' in changed_id:
         current_streak_id[patient_id] = min(max_streak_id, current_streak_id[patient_id] + 1)
+    elif 'older-button' in changed_id:
+        current_streak_id[patient_id] = max(1, current_streak_id[patient_id] - 1)
 
     # Fetch data based on the updated streak_id from your dataframe (df)
     # Modify this part according to how your data is structured
