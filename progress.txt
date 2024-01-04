@@ -15,13 +15,20 @@ done:
 * fetching ready data from redis at page load (more that just 1 row)
 
 problems:
-* timeouts during fetching data
-* duplicate data (by trace id)
-* missing data points (by trace id)
+* [OLD]:
+    * timeouts during fetching data
+    * duplicate data (by trace id)
+    * missing data points (by trace id)
 
 to do:
+* consultations conclusions
 * custom component feet diagram (draw feet image, import feet image, place circles in the right places)
 * nice layout (homepages, patient pages)
 * docker
 * documentation (user manual + architecture description)
 * report (design - NOTION)
+
+konsultacje:
+* data fetching - wątki w aplikacji (multiprocessing), nie oddzielny skrypt
+* oś x - odkodowany timestamp z api (trace id)
+* braki w timestampie - interpolacja, ekstrapolacja lub aproksymacja dziur, ewentualnie zostawienie ich pustych
