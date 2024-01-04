@@ -7,10 +7,12 @@ done:
 * pages
 * custom component boilerplate
 * custom component circles (changing colours and sizes)
-* anomaly history for 1 patient* anomaly history for concurrent patients
+* anomaly history for 1 patient
+* anomaly history for concurrent patients
 * timestamped data
 * anomaly streak separation in live data
 * anomaly history streak order (buttons)
+* fetching ready data from redis at page load (more that just 1 row)
 
 problems:
 * timeouts during fetching data
@@ -19,7 +21,6 @@ problems:
 
 to do:
 * custom component feet diagram (draw feet image, import feet image, place circles in the right places)
-* fetching ready data from redis at app start (more that just 1 row) [MAYBE - CONSULT WITH SZMURŁO]
 * nice layout (homepages, patient pages)
 * docker
 * documentation (user manual + architecture description)
