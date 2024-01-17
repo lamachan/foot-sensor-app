@@ -13,6 +13,8 @@ done:
 * anomaly streak separation in live data
 * anomaly history streak order (buttons)
 * fetching ready data from redis at page load (more that just 1 row)
+- zmiany w przyciskach na anomaly history
+- zmiana sposobu przechowywania danych w anomalu history na memory w kliencie
 
 problems:
 * [OLD]:
@@ -21,12 +23,16 @@ problems:
     * missing data points (by trace id)
 
 to do:
-* consultations conclusions
 * custom component feet diagram (draw feet image, import feet image, place circles in the right places)
 * nice layout (homepages, patient pages)
 * docker
 * documentation (user manual + architecture description)
 * report (design - NOTION)
+- wielowątkowe pobierane danych w aplikacji
+- zmiana identyfikacji pomiaru na odkodowane trace_id
+- ewentualna interpolacja/ekstrapolacja/aproksymacja brakujących pomiarów (po trace_id)
+- zmiana sposobu przechowywania danych w live na memory w kliencie (?)
+- 'patient_id' int czy string? zmienić w anomaly history lub live
 
 konsultacje:
 * data fetching - wątki w aplikacji (multiprocessing), nie oddzielny skrypt

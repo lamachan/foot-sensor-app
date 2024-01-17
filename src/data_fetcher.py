@@ -58,6 +58,6 @@ def fetch_and_store_data():
                 print(f"Error fetching and storing data for patient {i}: {e}")
                 time.sleep(1)
         # wait for less than a second (about 1 s including the fetching) for the next fetch
-        time.sleep(0.8)
+        time.sleep(0.5)
        
 fetch_and_store_data()

@@ -62,7 +62,7 @@ def layout(patient_id=None):
 
         dcc.Interval(
             id='interval-component',
-            interval=1*1000,
+            interval=1000,
             n_intervals=0
         )
     ])
@@ -92,7 +92,8 @@ def load_patient_data(patient_id):
                 row['time'],
                 row['data']['firstname'],
                 row['data']['lastname'],
-                row['data']['trace']['id']
+                str(row['data']['trace']['id'])[:-8],
+                str(row['data']['trace']['id'])[-8:]
             ] + [
                 s['anomaly'] for s in row['data']['trace']['sensors']
             ] + [
@@ -100,7 +101,7 @@ def load_patient_data(patient_id):
             ]
             for row in data
         ]
-        patient_data[int(patient_id)] = pd.DataFrame(row_list, columns='time firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
+        patient_data[int(patient_id)] = pd.DataFrame(row_list, columns='time firstname lastname trace_id_id trace_id_date anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
         print(patient_data[int(patient_id)])
         print(int(patient_id) in patient_data)
     
@@ -155,19 +156,20 @@ def update_graph(n, pathname):
             row_json['time'],
             row_json['data']['firstname'],
             row_json['data']['lastname'],
-            row_json['data']['trace']['id']
+            str(row_json['data']['trace']['id'])[:-8],
+            str(row_json['data']['trace']['id'])[-8:]
         ] + [
             s['anomaly'] for s in row_json['data']['trace']['sensors']
         ] + [
             s['value'] for s in row_json['data']['trace']['sensors']
         ]
-        row_df = pd.DataFrame([row_list], columns='time firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
+        row_df = pd.DataFrame([row_list], columns='time firstname lastname trace_id_id trace_id_date anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
 
         if patient_id not in patient_data:
             # create an empty DataFrame if it's the 1st time this patient's live record has been accessed
             print(patient_data[patient_id])
             print('CREATING NEW DF!')
-            patient_data[patient_id] = pd.DataFrame(columns='time firstname lastname trace_id anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())    
+            patient_data[patient_id] = pd.DataFrame(columns='time firstname lastname trace_id_id trace_id_date anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())    
 
         df = patient_data[patient_id]
         df = pd.concat([df, row_df], ignore_index=True)
@@ -181,7 +183,8 @@ def update_graph(n, pathname):
         updated_figures = []
         for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
             all_data_trace = {
-                                'x': df['time'],
+                                # 'x': df['time'],
+                                'x': df['trace_id_id'],
                                 'y': df[sensor],
                                 'type': 'scatter',
                                 'mode': 'lines',
@@ -209,7 +212,8 @@ def update_graph(n, pathname):
                 # create a trace for each anomaly streak
                 for streak in streaks:
                     trace = {
-                                'x': df.loc[streak, 'time'],
+                                # 'x': df.loc[streak, 'time'],
+                                'x': df.loc[streak, 'trace_id_id'],
                                 'y': df.loc[streak, sensor],
                                 'type': 'scatter',
                                 'mode': 'lines',
@@ -244,7 +248,7 @@ def update_graph(n, pathname):
                         title='Time',
                         tickangle=45,
                         tickmode='auto',
-                        nticks=10,
+                        # nticks=10,
                         tickfont=dict(size=8)
                     ),
                     'yaxis': dict(
