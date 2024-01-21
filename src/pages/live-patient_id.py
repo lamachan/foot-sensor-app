@@ -3,6 +3,7 @@ from dash import html, dcc, callback, Input, Output, State
 import redis
 import json
 import pandas as pd
+from frontend import navbar, navbar2
 
 def title(patient_id=None):
     return f'Patient {patient_id} - live'
@@ -11,10 +12,10 @@ dash.register_page(__name__, path_template='/live/<patient_id>', title=title)
 
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-# dictionary to store DataFrames for each patient
 patient_data = {}
 
 REGISTERED_PATIENTS = ['1', '2', '3', '4', '5', '6']
+
 
 def layout(patient_id=None):
     if patient_id not in REGISTERED_PATIENTS:
@@ -22,9 +23,10 @@ def layout(patient_id=None):
             f'Patient ID: {patient_id} is invalid.'
         )
 
-    # correct patient_id
     return html.Div([
         dcc.Location(id='url', refresh=False),
+        navbar.navbar,
+        navbar2.navbar,
 
         load_patient_data(patient_id),
 
@@ -106,7 +108,7 @@ def load_patient_data(patient_id):
         print(int(patient_id) in patient_data)
     
         return html.Div([
-            html.H3(f"Patient ID: {patient_id}"),
+            #html.H3(f"Patient ID: {patient_id}"),
             html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
             html.P(f"Birth year: {data[0]['data']['birthdate']}"),
             html.P(f"Disability: {data[0]['data']['disabled']}")

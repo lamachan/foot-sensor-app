@@ -3,6 +3,8 @@ from dash import html, dcc, callback, Input, Output, State
 import redis
 import json
 import pandas as pd
+import dash_bootstrap_components as dbc
+from frontend import navbar, navbar2
 
 def title(patient_id=None):
     return f'Patient {patient_id} - history'
@@ -25,9 +27,8 @@ def layout(patient_id=None):
         )
 
     return html.Div([
-        html.Div(
-            f'History of patient {patient_id}.'
-        ),
+        navbar.navbar,
+        navbar2.navbar,
 
         dcc.Store('memory'),
 
@@ -59,14 +60,18 @@ def load_patient_data(patient_id):
             dcc.Location(id='url', refresh=False),
 
             html.Div([
-                html.H3(f"Patient ID: {patient_id}"),
+                html.P(f"Patient ID: {patient_id}"),
                 html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
                 html.P(f"Birth year: {data[0]['data']['birthdate']}"),
                 html.P(f"Disability: {data[0]['data']['disabled']}"),
-                html.Button('Newest', id='newest-button', n_clicks=0, disabled=True),
-                html.Button('Newer', id='newer-button', n_clicks=0, disabled=True),
-                html.Button('Older', id='older-button', n_clicks=0),
-                html.Button('Oldest', id='oldest-button', n_clicks=0)
+                dbc.Button("Newest", color="primary", className="me-1", id='newest-button', n_clicks=0, disabled=True),
+                dbc.Button("Newer", color="primary", className="me-1", id='newer-button', n_clicks=0, disabled=True),
+                dbc.Button("Older", color="primary", className="me-1", id='older-button', n_clicks=0),
+                dbc.Button("Oldest", color="primary", className="me-1", id='oldest-button', n_clicks=0),
+                #html.Button('Newest', id='newest-button', n_clicks=0, disabled=True),
+                #html.Button('Newer', id='newer-button', n_clicks=0, disabled=True),
+                #html.Button('Older', id='older-button', n_clicks=0),
+                #html.Button('Oldest', id='oldest-button', n_clicks=0)
             ]),
             html.Div([
                 dcc.Graph(

@@ -1,14 +1,12 @@
 import dash
 from dash import html, dcc
+import dash_bootstrap_components as dbc
+from frontend import navbar, navbar3
 
 dash.register_page(__name__, path_template='/history')
 
 
 layout = html.Div([
-    html.H1('Homepage of /history'),
-    html.Div([
-        html.Div(
-            dcc.Link(f'Patient no. {i}', href=f'/history/{i}')
-        ) for i in range(1,7)
-    ])
+    navbar.navbar,
+    navbar3.navbar,
 ])
