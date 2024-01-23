@@ -64,6 +64,7 @@ def load_patient_data(patient_id):
                 html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
                 html.P(f"Birth year: {data[0]['data']['birthdate']}"),
                 html.P(f"Disability: {data[0]['data']['disabled']}"),
+                html.P(id='anomaly-date'),
                 dbc.Button("Newest", color="primary", className="me-1", id='newest-button', n_clicks=0, disabled=True),
                 dbc.Button("Newer", color="primary", className="me-1", id='newer-button', n_clicks=0, disabled=True),
                 dbc.Button("Older", color="primary", className="me-1", id='older-button', n_clicks=0),
@@ -117,6 +118,7 @@ def fetch_anomaly_data(patient_id):
     return None
 
 @callback(
+    Output('anomaly-date', 'children'),
     Output('L0-anomaly-graph', 'figure'),
     Output('L1-anomaly-graph', 'figure'),
     Output('L2-anomaly-graph', 'figure'),
@@ -139,9 +141,6 @@ def fetch_anomaly_data(patient_id):
     State('memory', 'data')]
 )
 def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figure, pathname, data):
-    # global current_streak_id  # Using a global variable to track current streak_id
-    # global patient_data
-
     patient_id = pathname.split('/')[-1]
     df = patient_data[patient_id]
     max_streak_id = df['streak_id'].max()
@@ -169,6 +168,8 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
     # Fetch data based on the updated streak_id from df
     streak_data = df[df['streak_id'] == data['current_streak_id']]
     print(streak_data)
+
+    anomaly_date = f"Anomaly date: {streak_data.iloc[0]['date']}"
 
     updated_figures = []
     # Loop through the column names to update each graph
@@ -203,4 +204,4 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
         updated_figures.append(fig)
 
     # Return all updated figures for the graphs, button states and data
-    return *updated_figures, *buttons_disabled, data
+    return anomaly_date, *updated_figures, *buttons_disabled, data

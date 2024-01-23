@@ -33,6 +33,11 @@ to do:
 - ewentualna interpolacja/ekstrapolacja/aproksymacja brakujących pomiarów (po trace_id)
 - zmiana sposobu przechowywania danych w live na memory w kliencie (?)
 - 'patient_id' int czy string? zmienić w anomaly history lub live
+- callback od razu po fetch_all_data
+- n_intervals n - multitab problem?
+- File "d:\DOKUMENTY\STUDIA\SEMESTR_5\PPDV\PROJEKT\FINAL_PROJECT\foot-sensor-app\src\pages\live-patient_id.py", line 182, in update_graph
+    print(patient_data[patient_id])
+    KeyError: 1
 
 konsultacje:
 * data fetching - wątki w aplikacji (multiprocessing), nie oddzielny skrypt
