@@ -13,7 +13,7 @@ app = dash.Dash(__name__, use_pages=True, suppress_callback_exceptions=True, ext
 
 app.layout = html.Div([
     dash.page_container
-], key='my-dash-app-key')
+])
 
 def fetch_data_from_api(api_url, redis_client, next_anomaly_streak_id, previous_anomaly):
     while True:

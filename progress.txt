@@ -14,7 +14,8 @@ done:
 * anomaly history streak order (buttons)
 * fetching ready data from redis at page load (more that just 1 row)
 - zmiany w przyciskach na anomaly history
-- zmiana sposobu przechowywania danych w anomalu history na memory w kliencie
+- zmiana sposobu przechowywania danych na memory w kliencie (anomaly streak_id, live patient_data)
+- wielowątkowe pobierane danych w aplikacji
 
 problems:
 * [OLD]:
@@ -25,19 +26,14 @@ problems:
 to do:
 * custom component feet diagram (draw feet image, import feet image, place circles in the right places)
 * nice layout (homepages, patient pages)
-* docker
+* docker (maybe)
 * documentation (user manual + architecture description)
 * report (design - NOTION)
-- wielowątkowe pobierane danych w aplikacji
+
 - zmiana identyfikacji pomiaru na odkodowane trace_id
 - ewentualna interpolacja/ekstrapolacja/aproksymacja brakujących pomiarów (po trace_id)
-- zmiana sposobu przechowywania danych w live na memory w kliencie (?)
-- 'patient_id' int czy string? zmienić w anomaly history lub live
 - callback od razu po fetch_all_data
-- n_intervals n - multitab problem?
-- File "d:\DOKUMENTY\STUDIA\SEMESTR_5\PPDV\PROJEKT\FINAL_PROJECT\foot-sensor-app\src\pages\live-patient_id.py", line 182, in update_graph
-    print(patient_data[patient_id])
-    KeyError: 1
+- n_intervals - problem, gdy nie odświeżymy strony przy ponownym uruchomieniu aplikacji
 
 konsultacje:
 * data fetching - wątki w aplikacji (multiprocessing), nie oddzielny skrypt

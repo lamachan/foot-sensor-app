@@ -16,7 +16,6 @@ redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 # Dictionary to store DataFrames for each patient
 patient_data = {}
-# current_streak_id = {}
 
 REGISTERED_PATIENTS = ['1', '2', '3', '4', '5', '6']
 
