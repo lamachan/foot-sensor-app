@@ -16,6 +16,7 @@ done:
 - zmiany w przyciskach na anomaly history
 - zmiana sposobu przechowywania danych na memory w kliencie (anomaly streak_id, live patient_data)
 - wielowątkowe pobierane danych w aplikacji
+- żeby dało się przybliżyć konkretny wycinek
 
 problems:
 * [OLD]:
@@ -37,7 +38,6 @@ prezentacja:
 - wykresy liniowe wszystkich sensorów widoczne naraz na ekranie
 - żeby było multiuser
 - czas na osi x
-- żeby dało się przybliżyć konkretny wycinek
 
 konsultacje:
 * data fetching - wątki w aplikacji (multiprocessing), nie oddzielny skrypt
