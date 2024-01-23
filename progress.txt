@@ -26,14 +26,18 @@ problems:
 to do:
 * custom component feet diagram (draw feet image, import feet image, place circles in the right places)
 * nice layout (homepages, patient pages)
-* docker (maybe)
-* documentation (user manual + architecture description)
-* report (design - NOTION)
-
+* docker (not necessary)
+* documentation (user manual + architecture description + design) - motywacje designowe i rysunek architektury
 - zmiana identyfikacji pomiaru na odkodowane trace_id
 - ewentualna interpolacja/ekstrapolacja/aproksymacja brakujących pomiarów (po trace_id)
 - callback od razu po fetch_all_data
 - n_intervals - problem, gdy nie odświeżymy strony przy ponownym uruchomieniu aplikacji
+
+prezentacja:
+- wykresy liniowe wszystkich sensorów widoczne naraz na ekranie
+- żeby było multiuser
+- czas na osi x
+- żeby dało się przybliżyć konkretny wycinek
 
 konsultacje:
 * data fetching - wątki w aplikacji (multiprocessing), nie oddzielny skrypt

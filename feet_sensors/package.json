@@ -24,6 +24,7 @@
   "author": "Weronika Zbierowska <hello.weri@vp.pl>",
   "license": "MIT",
   "dependencies": {
+    "file-loader": "^6.2.0",
     "ramda": "^0.26.1",
     "styled-components": "^6.1.5"
   },
