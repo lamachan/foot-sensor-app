@@ -18,28 +18,14 @@ done:
 - wielowątkowe pobierane danych w aplikacji
 - żeby dało się przybliżyć konkretny wycinek
 
-problems:
-* [OLD]:
-    * timeouts during fetching data
-    * duplicate data (by trace id)
-    * missing data points (by trace id)
-
 to do:
-* custom component feet diagram (draw feet image, import feet image, place circles in the right places)
-* nice layout (homepages, patient pages)
-* docker (not necessary)
-* documentation (user manual + architecture description + design) - motywacje designowe i rysunek architektury
-- zmiana identyfikacji pomiaru na odkodowane trace_id
-- ewentualna interpolacja/ekstrapolacja/aproksymacja brakujących pomiarów (po trace_id)
-- callback od razu po fetch_all_data
-- n_intervals - problem, gdy nie odświeżymy strony przy ponownym uruchomieniu aplikacji
-
-prezentacja:
-- wykresy liniowe wszystkich sensorów widoczne naraz na ekranie
-- żeby było multiuser
-- czas na osi x
-
-konsultacje:
-* data fetching - wątki w aplikacji (multiprocessing), nie oddzielny skrypt
-* oś x - odkodowany timestamp z api (trace id)
-* braki w timestampie - interpolacja, ekstrapolacja lub aproksymacja dziur, ewentualnie zostawienie ich pustych
+- bootstrap, żeby wszystko było widoczne na ekranie (na każdym ekranie) - live i history
+- marginesy od brzegu ekranu - live i history
+- formatowanie wykresu (czy mają być podpisy osi, siatka, itp.)
+- homepage
+- [może] przenieść stópki na górę ekranu (obok danych pacjenta)
+- [może] zmiana wielkości sensorów w zależności od wartości L0, L1, itd.
+- komentarze i printy (usunąć lub sformatować)
+- jak poprawnie według zasad użyć custom component w swoim projekcie
+- test czy działa dla wielu użytkowników na raz
+- raport (design, architektura, user manual)
