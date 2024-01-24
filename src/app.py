@@ -38,10 +38,8 @@ def fetch_data_from_api(api_url, redis_client, next_anomaly_streak_id, previous_
                     previous_anomaly = True
 
                 anomaly_data = {'streak_id': next_anomaly_streak_id, 'timestamp': str(datetime.now()), 'data': data}
-                # print(anomaly_data)
                 redis_client.rpush(f'patient-{patient_id}-anomalies', json.dumps(anomaly_data))
             else:
-                # print(f'patient {patient_id} no anomaly')
                 previous_anomaly = False
 
         except requests.Timeout as e:

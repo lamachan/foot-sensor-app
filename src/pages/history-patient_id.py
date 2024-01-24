@@ -35,9 +35,6 @@ def layout(patient_id=None):
     ])
     
 def load_patient_data(patient_id):
-    # global patient_data
-    # global current_streak_id
-
     data = fetch_anomaly_data(patient_id)
     
     if data:
@@ -68,10 +65,6 @@ def load_patient_data(patient_id):
                 dbc.Button("Newer", color="primary", className="me-1", id='newer-button', n_clicks=0, disabled=True),
                 dbc.Button("Older", color="primary", className="me-1", id='older-button', n_clicks=0),
                 dbc.Button("Oldest", color="primary", className="me-1", id='oldest-button', n_clicks=0),
-                #html.Button('Newest', id='newest-button', n_clicks=0, disabled=True),
-                #html.Button('Newer', id='newer-button', n_clicks=0, disabled=True),
-                #html.Button('Older', id='older-button', n_clicks=0),
-                #html.Button('Oldest', id='oldest-button', n_clicks=0)
             ]),
             html.Div([
                 dcc.Graph(
@@ -112,7 +105,6 @@ def fetch_anomaly_data(patient_id):
     data = redis_client.lrange(data_key, 0, -1)
     if data:
         parsed_data = [json.loads(entry) for entry in data]
-        # print(parsed_data)
         return parsed_data
     return None
 

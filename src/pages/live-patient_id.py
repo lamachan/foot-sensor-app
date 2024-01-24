@@ -66,17 +66,17 @@ def layout(patient_id=None):
         feet_sensors.FeetSensors(
             id='feet-sensors',
             L0=0,
-            L1=30,
-            L2=100,
-            R0=2,
-            R1=55,
-            R2=1000,
+            L1=0,
+            L2=0,
+            R0=0,
+            R1=0,
+            R2=0,
             anomaly_L0=False,
-            anomaly_L1=True,
+            anomaly_L1=False,
             anomaly_L2=False,
             anomaly_R0=False,
-            anomaly_R1=True,
-            anomaly_R2=False,
+            anomaly_R1=False,
+            anomaly_R2=False
         ),
 
         dcc.Interval(
@@ -111,7 +111,6 @@ def load_patient_data(patient_id):
     
         return html.Div([
             dcc.Store(id='patient-data-store', data=json_data),
-            #html.H3(f"Patient ID: {patient_id}"),
             html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
             html.P(f"Birth year: {data[0]['data']['birthdate']}"),
             html.P(f"Disability: {data[0]['data']['disabled']}")
@@ -132,11 +131,8 @@ def fetch_all_data(patient_id):
 def fetch_new_data(patient_id):
     data_key = f'patient-{patient_id}-data'
     latest_data = redis_client.lindex(data_key, -1)
-    # latest_data = redis_client.lrange(data_key, -5, -1)
     if latest_data:
         return json.loads(latest_data)
-        # parsed_data =[json.loads(entry) for entry in latest_data]
-        # return parsed_data
     return None
 
 @callback(
@@ -146,6 +142,18 @@ def fetch_new_data(patient_id):
     Output('R0-live-graph', 'figure'),
     Output('R1-live-graph', 'figure'),
     Output('R2-live-graph', 'figure'),
+    Output('feet-sensors', 'anomaly_L0'),
+    Output('feet-sensors', 'anomaly_L1'),
+    Output('feet-sensors', 'anomaly_L2'),
+    Output('feet-sensors', 'anomaly_R0'),
+    Output('feet-sensors', 'anomaly_R1'),
+    Output('feet-sensors', 'anomaly_R2'),
+    Output('feet-sensors', 'L0'),
+    Output('feet-sensors', 'L1'),
+    Output('feet-sensors', 'L2'),
+    Output('feet-sensors', 'R0'),
+    Output('feet-sensors', 'R1'),
+    Output('feet-sensors', 'R2'),
     Output('patient-data-store', 'data')],
     [Input('interval-component', 'n_intervals')],
     [State('url', 'pathname'),
@@ -153,30 +161,13 @@ def fetch_new_data(patient_id):
 )
 def update_graph(n, pathname, patient_data):
     print(f'Entering the callback function., n={n}')
-    # print(f'pathname={pathname}, patient_data={patient_data}')
     patient_id = int(pathname.split('/')[-1])
 
     if patient_data:
         if n > 0:
-            # row_json = fetch_new_data(patient_id)
             data = fetch_new_data(patient_id)
 
             if data:
-                # row_list = [
-                #     [
-                #         row['time'],
-                #         row['data']['firstname'],
-                #         row['data']['lastname'],
-                #         int(str(row['data']['trace']['id'])[:-8]),
-                #         int(str(row['data']['trace']['id'])[-8:])
-                #     ] + [
-                #         s['anomaly'] for s in row['data']['trace']['sensors']
-                #     ] + [
-                #         s['value'] for s in row['data']['trace']['sensors']
-                #     ]
-                #     for row in data
-                # ]
-                # new_data_df = pd.DataFrame(row_list, columns='time firstname lastname trace_id_id trace_id_date anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
                 row_list = [
                     data['time'],
                     data['data']['firstname'],
@@ -199,23 +190,17 @@ def update_graph(n, pathname, patient_data):
 
                 patient_data = df.to_json(orient='split')
             else:
-                return [{'data': [], 'layout': {}}] * 6, patient_data
+                return [{'data': [], 'layout': {}}] * 6, [False] * 6, [0] * 6, patient_data
         else:
             df = pd.read_json(patient_data, orient='split')
     else:
-        return [{'data': [], 'layout': {}}] * 6, patient_data
-
-    # missing trace_id - IDK
-    # all_trace_ids = pd.DataFrame({'trace_id_id': range(df['trace_id_id'].min(), df['trace_id_id'].max() + 1)})
-    # result_df = pd.merge(all_trace_ids, df, on='trace_id_id', how='left')
-    # print(result_df)
+        return [{'data': [], 'layout': {}}] * 6, [False] * 6, [0] * 6, patient_data
 
     # create updated figures for each sensor
     updated_figures = []
     for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
         all_data_trace = {
                             'x': df['time'],
-                            # 'x': df['trace_id_id'],
                             'y': df[sensor],
                             'type': 'scatter',
                             'mode': 'lines',
@@ -244,7 +229,6 @@ def update_graph(n, pathname, patient_data):
             for streak in streaks:
                 trace = {
                             'x': df.loc[streak, 'time'],
-                            # 'x': df.loc[streak, 'trace_id_id'],
                             'y': df.loc[streak, sensor],
                             'type': 'scatter',
                             'mode': 'lines',
@@ -276,4 +260,6 @@ def update_graph(n, pathname, patient_data):
         }
         updated_figures.append(fig)
 
-    return *updated_figures, patient_data
+        anomaly_L0, anomaly_L1, anomaly_L2, anomaly_R0, anomaly_R1, anomaly_R2, L0, L1, L2, R0, R1, R2 = df.iloc[-1, 5:].values
+
+    return *updated_figures, anomaly_L0, anomaly_L1, anomaly_L2, anomaly_R0, anomaly_R1, anomaly_R2, L0, L1, L2, R0, R1, R2, patient_data

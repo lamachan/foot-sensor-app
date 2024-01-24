@@ -8,5 +8,5 @@ dash.register_page(__name__, path_template='/history')
 
 layout = html.Div([
     navbar.navbar,
-    navbar3.navbar,
+    navbar3.navbar
 ])
