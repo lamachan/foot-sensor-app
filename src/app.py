@@ -26,11 +26,9 @@ def fetch_data_from_api(api_url, redis_client, next_anomaly_streak_id, previous_
             if patient_id == '1':
                 print(timestamped_data['time'])
             
-            # store 10 minutes of live data in a redis list 'patient-[idx]-data'
             redis_client.rpush(f'patient-{patient_id}-data', json.dumps(timestamped_data))
             redis_client.ltrim(f'patient-{patient_id}-data', -600, -1)
 
-            # detect anomaly streak and store it with the correct streak_id in a redis list 'patient-[idx]-anomalies'
             anomalies = [s['anomaly'] for s in data['trace']['sensors']]
             if any(anomalies):
                 if not previous_anomaly:
@@ -55,7 +53,6 @@ if __name__ == '__main__':
     redis_host = 'localhost'
     redis_port = 6379
     redis_client = redis.StrictRedis(host=redis_host, port=redis_port)
-    # redis_client.flushdb()
 
     next_anomaly_streak_id = {}
     previous_anomaly = {}
@@ -74,7 +71,6 @@ if __name__ == '__main__':
     print(next_anomaly_streak_id)
     print(previous_anomaly)
 
-    # Set up data fetching threads
     threads = []
     for patient_id in range(1, 7):
         thread = threading.Thread(target=fetch_data_from_api, args=(
@@ -88,5 +84,4 @@ if __name__ == '__main__':
     for thread in threads:
         thread.start()
 
-    # Run the Dash app in the main thread
     app.run_server(debug=False)

@@ -11,10 +11,8 @@ def title(patient_id=None):
 
 dash.register_page(__name__, path_template='/history/<patient_id>', title=title)
 
-# Initialize Redis connection
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-# Dictionary to store DataFrames for each patient
 patient_data = {}
 
 REGISTERED_PATIENTS = ['1', '2', '3', '4', '5', '6']
@@ -103,7 +101,6 @@ def load_patient_data(patient_id):
     else:
         return html.Div(f'No history of anomalies found for patient {patient_id}.')
 
-# Function to fetch data from Redis based on the endpoint
 def fetch_anomaly_data(patient_id):
     data_key = f'patient-{patient_id}-anomalies'
     data = redis_client.lrange(data_key, 0, -1)
@@ -144,7 +141,6 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
         'current_streak_id': max_streak_id
     }
 
-    # Determine which button was clicked and adjust the streak_id accordingly
     if dash.ctx.triggered_id == 'newest-button':
         data['current_streak_id'] = max_streak_id
     if dash.ctx.triggered_id == 'newer-button':
@@ -160,14 +156,12 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
     oldest_diabled = data['current_streak_id'] == 1
     buttons_disabled = [newest_diabled, newer_diabled, older_diabled, oldest_diabled]
 
-    # Fetch data based on the updated streak_id from df
     streak_data = df[df['streak_id'] == data['current_streak_id']]
-    print(streak_data)
+    #print(streak_data)
 
     anomaly_date = f"Anomaly date: {streak_data.iloc[0]['date']}"
 
     updated_figures = []
-    # Loop through the column names to update each graph
     for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
         fig = {
             'data': [{
@@ -198,5 +192,4 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
         }
         updated_figures.append(fig)
 
-    # Return all updated figures for the graphs, button states and data
     return anomaly_date, *updated_figures, *buttons_disabled, data

@@ -33,7 +33,6 @@ def layout(patient_id=None):
         load_patient_data(patient_id),
 
         dbc.Row([
-            # left foot line graphs
             dbc.Col([
                 dcc.Graph(
                     id='L0-live-graph',
@@ -49,7 +48,6 @@ def layout(patient_id=None):
                 ),
             ], width=6),
 
-            # right foot line graphs
             dbc.Col([
                 dcc.Graph(
                     id='R0-live-graph',
@@ -120,7 +118,6 @@ def load_patient_data(patient_id):
     ], width=6) if data else dbc.Col(html.Div("Patient information not found."))
 
 
-# fetch all data from a redis list
 def fetch_all_data(patient_id):
     data_key = f'patient-{patient_id}-data'
     all_data = redis_client.lrange(data_key, 0, -1)
@@ -129,7 +126,6 @@ def fetch_all_data(patient_id):
         return parsed_data
     return None
 
-# fetch the last data entry from a redis list
 def fetch_new_data(patient_id):
     data_key = f'patient-{patient_id}-data'
     latest_data = redis_client.lindex(data_key, -1)
@@ -198,7 +194,6 @@ def update_graph(n, pathname, patient_data):
     else:
         return [{'data': [], 'layout': {}}] * 6, [False] * 6, [0] * 6, patient_data
 
-    # create updated figures for each sensor
     updated_figures = []
     for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
         all_data_trace = {
@@ -214,7 +209,6 @@ def update_graph(n, pathname, patient_data):
         anomaly_traces = []
 
         if anomaly_indices:
-            # find and seperate anomaly streaks
             streaks = []
             current_streak = []
             for i in range(len(anomaly_indices) - 1):
@@ -227,7 +221,6 @@ def update_graph(n, pathname, patient_data):
             current_streak.append(anomaly_indices[-1])
             streaks.append(current_streak)
 
-            # create a trace for each anomaly streak
             for streak in streaks:
                 trace = {
                             'x': df.loc[streak, 'time'],
