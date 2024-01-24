@@ -1,3 +1,5 @@
 # AUTO GENERATED FILE - DO NOT EDIT
 
-export(''FeetSensors)
+export(FeetSensors)
+export(FeetSensors)
+export(feetSensors)

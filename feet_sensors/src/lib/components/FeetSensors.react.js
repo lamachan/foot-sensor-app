@@ -5,13 +5,13 @@ import PropTypes from 'prop-types';
 // import Cat from '../../../assets/cat.jpg'
 
 // Function to calculate circle size based on value
-const calculateCircleSize = value => {
+//const calculateCircleSize = value => {
     // Define a base size for the circle
-    const baseSize = 30;
-  
+    //const baseSize = 30;
+ 
     // Adjust the size based on the value
-    return baseSize + value * 0.03; // Modify this multiplier as needed
-  };
+    //return baseSize + value * 0.03; // Modify this multiplier as needed
+  //};
   
   // Styled component for a dynamically sized circle
 const Circle = styled.div`
@@ -21,12 +21,13 @@ const Circle = styled.div`
   justify-content: center;
   align-items: center;
   margin: 5px;
-  width: ${({ value }) => calculateCircleSize(value)}px;
-  height: ${({ value }) => calculateCircleSize(value)}px;
+  width: 35px;
+  height: 35px;
+  
 `;
 
 const Value = styled.p`
-  font-size: 16px;
+  font-size: 12px;
   font-weight: bold;
   color: white;
 `;
@@ -36,8 +37,27 @@ const FeetSensors = (props) => {
 
     return (
         <div id={id}>
+            <Circle value={L0} isAnomaly={anomaly_L0} style={{'position': 'absolute', 'top': 70, 'left': 100}}>
+                <Value>{L0}</Value>
+            </Circle>
+            <Circle value={L1} isAnomaly={anomaly_L1} style={{'position': 'absolute', 'top': 110, 'left': 50}}>
+                <Value>{L1}</Value>
+            </Circle>
+            <Circle value={L2} isAnomaly={anomaly_L2} style={{'position': 'absolute', 'top': 280, 'left': 90}}>
+                <Value>{L2}</Value>
+            </Circle>
+            <Circle value={R0} isAnomaly={anomaly_R0} style={{'position': 'absolute', 'top': 70, 'left': 200}}>
+                <Value>{R0}</Value>
+            </Circle>
+            <Circle value={R1} isAnomaly={anomaly_R1} style={{'position': 'absolute', 'top': 110, 'left': 250}}>
+                <Value>{R1}</Value>
+            </Circle>
+            <Circle value={R2} isAnomaly={anomaly_R2} style={{'position': 'absolute', 'top': 280, 'left': 210}}>
+                <Value>{R2}</Value>
+            </Circle>
+
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-            width="1079.000000pt" height="1280.000000pt" viewBox="0 0 1079.000000 1280.000000"
+            width="250.000000pt" height="250.000000pt" viewBox="0 0 1079.000000 1280.000000"
             preserveAspectRatio="xMidYMid meet">
             <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
             fill="#000000" stroke="none">
@@ -90,24 +110,6 @@ const FeetSensors = (props) => {
             -152 111 -242 69z"/>
             </g>
             </svg>
-            <Circle value={L0} isAnomaly={anomaly_L0}>
-                <Value>{L0}</Value>
-            </Circle>
-            <Circle value={L1} isAnomaly={anomaly_L1}>
-                <Value>{L1}</Value>
-            </Circle>
-            <Circle value={L2} isAnomaly={anomaly_L2}>
-                <Value>{L2}</Value>
-            </Circle>
-            <Circle value={R0} isAnomaly={anomaly_R0}>
-                <Value>{R0}</Value>
-            </Circle>
-            <Circle value={R1} isAnomaly={anomaly_R1}>
-                <Value>{R1}</Value>
-            </Circle>
-            <Circle value={R2} isAnomaly={anomaly_R2}>
-                <Value>{R2}</Value>
-            </Circle>
         </div>
     );
 }
