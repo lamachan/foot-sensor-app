@@ -5,6 +5,7 @@ import json
 import pandas as pd
 import feet_sensors
 
+import dash_bootstrap_components as dbc
 from frontend import navbar, navbar2
 
 def title(patient_id=None):
@@ -24,44 +25,46 @@ def layout(patient_id=None):
             f'Patient ID: {patient_id} is invalid.'
         )
 
-    return html.Div([
+    return dbc.Container(fluid=True, children=[
         dcc.Location(id='url', refresh=False),
         navbar.navbar,
         navbar2.navbar,
 
         load_patient_data(patient_id),
 
-        # left foot line graphs
-        html.Div([
-            dcc.Graph(
-                id='L0-live-graph',
-                style={'width': '100%', 'height': '200px'}
-            ),
-            dcc.Graph(
-                id='L1-live-graph',
-                style={'width': '100%', 'height': '200px'}
-            ),
-            dcc.Graph(
-                id='L2-live-graph',
-                style={'width': '100%', 'height': '200px'}
-            ),
-        ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'top'}),
+        dbc.Row([
+            # left foot line graphs
+            dbc.Col([
+                dcc.Graph(
+                    id='L0-live-graph',
+                    style={'width': '100%', 'height': '200px'}
+                ),
+                dcc.Graph(
+                    id='L1-live-graph',
+                    style={'width': '100%', 'height': '200px'}
+                ),
+                dcc.Graph(
+                    id='L2-live-graph',
+                    style={'width': '100%', 'height': '200px'}
+                ),
+            ], width=6),
 
-        # right foot line graphs
-        html.Div([
-            dcc.Graph(
-                id='R0-live-graph',
-                style={'width': '100%', 'height': '200px'}
-            ),
-            dcc.Graph(
-                id='R1-live-graph',
-                style={'width': '100%', 'height': '200px'}
-            ),
-            dcc.Graph(
-                id='R2-live-graph',
-                style={'width': '100%', 'height': '200px'}
-            ),
-        ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'top'}),
+            # right foot line graphs
+            dbc.Col([
+                dcc.Graph(
+                    id='R0-live-graph',
+                    style={'width': '100%', 'height': '200px'}
+                ),
+                dcc.Graph(
+                    id='R1-live-graph',
+                    style={'width': '100%', 'height': '200px'}
+                ),
+                dcc.Graph(
+                    id='R2-live-graph',
+                    style={'width': '100%', 'height': '200px'}
+                ),
+            ], width=6),
+        ]),
 
         feet_sensors.FeetSensors(
             id='feet-sensors',
@@ -109,14 +112,13 @@ def load_patient_data(patient_id):
         print(df)
         json_data = df.to_json(orient='split')
     
-        return html.Div([
-            dcc.Store(id='patient-data-store', data=json_data),
-            html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
-            html.P(f"Birth year: {data[0]['data']['birthdate']}"),
-            html.P(f"Disability: {data[0]['data']['disabled']}")
-        ])
-    else:
-        return html.Div("Patient information not found.")
+    return dbc.Col([
+        dcc.Store(id='patient-data-store', data=json_data),
+        html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
+        html.P(f"Birth year: {data[0]['data']['birthdate']}"),
+        html.P(f"Disability: {data[0]['data']['disabled']}")
+    ], width=6) if data else dbc.Col(html.Div("Patient information not found."))
+
 
 # fetch all data from a redis list
 def fetch_all_data(patient_id):

@@ -4,7 +4,7 @@ import redis
 import json
 import pandas as pd
 import dash_bootstrap_components as dbc
-from frontend import navbar, navbar2
+from frontend import navbar, navbar3
 
 def title(patient_id=None):
     return f'Patient {patient_id} - history'
@@ -25,9 +25,9 @@ def layout(patient_id=None):
             f'Patient ID: {patient_id} is invalid.'
         )
 
-    return html.Div([
+    return dbc.Container(fluid=True, children=[
         navbar.navbar,
-        navbar2.navbar,
+        navbar3.navbar,
 
         dcc.Store('memory'),
 
@@ -55,46 +55,50 @@ def load_patient_data(patient_id):
         return html.Div([
             dcc.Location(id='url', refresh=False),
 
-            html.Div([
+            dbc.Row([
                 html.P(f"Patient ID: {patient_id}"),
                 html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
                 html.P(f"Birth year: {data[0]['data']['birthdate']}"),
                 html.P(f"Disability: {data[0]['data']['disabled']}"),
                 html.P(id='anomaly-date'),
-                dbc.Button("Newest", color="primary", className="me-1", id='newest-button', n_clicks=0, disabled=True),
-                dbc.Button("Newer", color="primary", className="me-1", id='newer-button', n_clicks=0, disabled=True),
-                dbc.Button("Older", color="primary", className="me-1", id='older-button', n_clicks=0),
-                dbc.Button("Oldest", color="primary", className="me-1", id='oldest-button', n_clicks=0),
             ]),
-            html.Div([
-                dcc.Graph(
-                    id='L0-anomaly-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='L1-anomaly-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='L2-anomaly-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-            ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'top'}),  # Left column
+                
+            dbc.Button("Newest", color="primary", className="me-1", id='newest-button', n_clicks=0, disabled=True),
+            dbc.Button("Newer", color="primary", className="me-1", id='newer-button', n_clicks=0, disabled=True),
+            dbc.Button("Older", color="primary", className="me-1", id='older-button', n_clicks=0),
+            dbc.Button("Oldest", color="primary", className="me-1", id='oldest-button', n_clicks=0),
 
-            html.Div([
-                dcc.Graph(
-                    id='R0-anomaly-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='R1-anomaly-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='R2-anomaly-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-            ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'top'}) # Right column
+            dbc.Row([
+                dbc.Col([ 
+                    dcc.Graph(
+                        id='L0-anomaly-graph',
+                        style={'width': '100%', 'height': '200px'}
+                    ),
+                    dcc.Graph(
+                        id='L1-anomaly-graph',
+                        style={'width': '100%', 'height': '200px'}
+                    ),
+                    dcc.Graph(
+                        id='L2-anomaly-graph',
+                        style={'width': '100%', 'height': '200px'}
+                    ),
+                ]),
+                dbc.Col([
+                    dcc.Graph(
+                        id='R0-anomaly-graph',
+                        style={'width': '100%', 'height': '200px'}
+                    ),
+                    dcc.Graph(
+                        id='R1-anomaly-graph',
+                        style={'width': '100%', 'height': '200px'}
+                    ),
+                    dcc.Graph(
+                        id='R2-anomaly-graph',
+                        style={'width': '100%', 'height': '200px'}
+                    ),
+                ])
+            ])
+
         ])
     else:
         return html.Div(f'No history of anomalies found for patient {patient_id}.')
