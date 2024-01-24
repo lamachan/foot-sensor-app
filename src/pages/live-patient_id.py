@@ -3,6 +3,7 @@ from dash import html, dcc, callback, Input, Output, State
 import redis
 import json
 import pandas as pd
+import feet_sensors
 
 from frontend import navbar, navbar2
 
@@ -61,6 +62,22 @@ def layout(patient_id=None):
                 style={'width': '100%', 'height': '200px'}
             ),
         ], style={'width': '48%', 'display': 'inline-block', 'vertical-align': 'top'}),
+
+        feet_sensors.FeetSensors(
+            id='feet-sensors',
+            L0=0,
+            L1=30,
+            L2=100,
+            R0=2,
+            R1=55,
+            R2=1000,
+            anomaly_L0=False,
+            anomaly_L1=True,
+            anomaly_L2=False,
+            anomaly_R0=False,
+            anomaly_R1=True,
+            anomaly_R2=False,
+        ),
 
         dcc.Interval(
             id='interval-component',

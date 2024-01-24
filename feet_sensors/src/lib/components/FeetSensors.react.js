@@ -1,61 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-// import Feet from '../../../public/assets/feet.svg'
-// import Cat from '../../../assets/cat.jpg'
 
-// Function to calculate circle size based on value
-//const calculateCircleSize = value => {
-    // Define a base size for the circle
-    //const baseSize = 30;
- 
-    // Adjust the size based on the value
-    //return baseSize + value * 0.03; // Modify this multiplier as needed
-  //};
-  
-  // Styled component for a dynamically sized circle
-const Circle = styled.div`
-  border-radius: 50%;
-  background-color: ${({ isAnomaly }) => (isAnomaly ? 'red' : 'blue')}; /* Set background color based on anomaly prop */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 5px;
-  width: 35px;
-  height: 35px;
-  
-`;
-
-const Value = styled.p`
-  font-size: 12px;
-  font-weight: bold;
-  color: white;
-`;
 
 const FeetSensors = (props) => {
     const {id, L0, L1, L2, R0, R1, R2, anomaly_L0, anomaly_L1, anomaly_L2, anomaly_R0, anomaly_R1, anomaly_R2} = props;
 
     return (
         <div id={id}>
-            <Circle value={L0} isAnomaly={anomaly_L0} style={{'position': 'absolute', 'top': 70, 'left': 100}}>
-                <Value>{L0}</Value>
-            </Circle>
-            <Circle value={L1} isAnomaly={anomaly_L1} style={{'position': 'absolute', 'top': 110, 'left': 50}}>
-                <Value>{L1}</Value>
-            </Circle>
-            <Circle value={L2} isAnomaly={anomaly_L2} style={{'position': 'absolute', 'top': 280, 'left': 90}}>
-                <Value>{L2}</Value>
-            </Circle>
-            <Circle value={R0} isAnomaly={anomaly_R0} style={{'position': 'absolute', 'top': 70, 'left': 200}}>
-                <Value>{R0}</Value>
-            </Circle>
-            <Circle value={R1} isAnomaly={anomaly_R1} style={{'position': 'absolute', 'top': 110, 'left': 250}}>
-                <Value>{R1}</Value>
-            </Circle>
-            <Circle value={R2} isAnomaly={anomaly_R2} style={{'position': 'absolute', 'top': 280, 'left': 210}}>
-                <Value>{R2}</Value>
-            </Circle>
-
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
             width="250.000000pt" height="250.000000pt" viewBox="0 0 1079.000000 1280.000000"
             preserveAspectRatio="xMidYMid meet">
@@ -109,7 +61,33 @@ const FeetSensors = (props) => {
             -304 57 17 140 94 172 161 31 63 68 195 68 241 0 47 -44 183 -74 225 -59 85
             -152 111 -242 69z"/>
             </g>
+            <g>
+            <circle cx="350" cy="350" r="60" fill={anomaly_L0 ? 'red' : 'blue'} />
+            <text x="350" y="350" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{L0}</text>
+            </g>
+            <g>
+            <circle cx="130" cy="450" r="60" fill={anomaly_L1 ? 'red' : 'blue'} />
+            <text x="130" y="450" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{L1}</text>
+            </g>
+            <g>
+            <circle cx="300" cy="1100" r="60" fill={anomaly_L2 ? 'red' : 'blue'} />
+            <text x="300" y="1110" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{L2}</text>
+            </g>
+            <g>
+            <circle cx="720" cy="350" r="60" fill={anomaly_R0 ? 'red' : 'blue'} />
+            <text x="720" y="350" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{R0}</text>
+            </g>
+            <g>
+            <circle cx="950" cy="450" r="60" fill={anomaly_R1 ? 'red' : 'blue'} />
+            <text x="950" y="450" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{R1}</text>
+            </g>
+            <g>
+            <circle cx="770" cy="1100" r="60" fill={anomaly_R2 ? 'red' : 'blue'} />
+            <text x="770" y="1110" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{R2}</text>
+            </g>
             </svg>
+            
+
         </div>
     );
 }
