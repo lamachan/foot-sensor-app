@@ -4,7 +4,7 @@ import redis
 import json
 import pandas as pd
 import dash_bootstrap_components as dbc
-from frontend import navbar, navbar_history
+from frontend import navbar
 
 def title(patient_id=None):
     return f'Patient {patient_id} - history'
@@ -26,7 +26,6 @@ def layout(patient_id=None):
     return html.Div([
 
         navbar.navbar,
-        # navbar_history.navbar,
 
         dcc.Location(id='url', refresh=False),
         dcc.Store('memory'),

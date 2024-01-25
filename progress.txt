@@ -22,10 +22,10 @@ done:
 - formatowanie wykresu (czy mają być podpisy osi, siatka, itp.)
 - [może] przenieść stópki na górę ekranu (obok danych pacjenta)
 - [może] zmiana wielkości sensorów w zależności od wartości L0, L1, itd.
+- homepage
+- jak poprawnie według zasad użyć custom component w swoim projekcie
 
 to do:
-- homepage
 - komentarze i printy (usunąć lub sformatować)
-- jak poprawnie według zasad użyć custom component w swoim projekcie
 - test czy działa dla wielu użytkowników na raz
 - raport (design, architektura, user manual)

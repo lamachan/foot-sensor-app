@@ -8,7 +8,7 @@ navbar = dbc.NavbarSimple(
             ],
             nav=True,
             in_navbar=True,
-            label="Live sensor measurements"
+            label="Live sensor measurements",
         ),
         dbc.DropdownMenu(
             children=[
@@ -16,7 +16,7 @@ navbar = dbc.NavbarSimple(
             ],
             nav=True,
             in_navbar=True,
-            label="Last anomaly sensor measurements"
+            label="Last anomaly sensor measurements",
         ),
     ],
     brand="Foot Sensor App",

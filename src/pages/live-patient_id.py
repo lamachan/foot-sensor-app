@@ -6,7 +6,7 @@ import pandas as pd
 from feet_sensors import FeetSensors
 
 import dash_bootstrap_components as dbc
-from frontend import navbar, navbar_live
+from frontend import navbar
 
 def title(patient_id=None):
     return f'Patient {patient_id} - live'
@@ -27,8 +27,8 @@ def layout(patient_id=None):
 
     return html.Div([
         dcc.Location(id='url', refresh=False),
+
         navbar.navbar,
-        # navbar_live.navbar,
 
         dbc.Container(fluid=True, children=[
             dbc.Row([
