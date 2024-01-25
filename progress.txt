@@ -24,8 +24,8 @@ done:
 - [może] zmiana wielkości sensorów w zależności od wartości L0, L1, itd.
 - homepage
 - jak poprawnie według zasad użyć custom component w swoim projekcie
+- test czy działa dla wielu użytkowników na raz
 
 to do:
 - komentarze i printy (usunąć lub sformatować)
-- test czy działa dla wielu użytkowników na raz
 - raport (design, architektura, user manual)
