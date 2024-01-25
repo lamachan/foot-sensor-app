@@ -6,7 +6,7 @@
 \title{FeetSensors component}
 
 \description{
-
+Custom component of 2 feet with 3 sensors on each foot.
 }
 
 \usage{
@@ -16,31 +16,31 @@ anomaly_R0=NULL, anomaly_R1=NULL, anomaly_R2=NULL)
 }
 
 \arguments{
-\item{id}{Character. }
+\item{id}{Character. Component ID.}
 
-\item{L0}{Numeric. }
+\item{L0}{Numeric. Value of the L0 sensor.}
 
-\item{L1}{Numeric. }
+\item{L1}{Numeric. Value of the L0 sensor.}
 
-\item{L2}{Numeric. }
+\item{L2}{Numeric. Value of the L0 sensor.}
 
-\item{R0}{Numeric. }
+\item{R0}{Numeric. Value of the L0 sensor.}
 
-\item{R1}{Numeric. }
+\item{R1}{Numeric. Value of the L0 sensor.}
 
-\item{R2}{Numeric. }
+\item{R2}{Numeric. Value of the L0 sensor.}
 
-\item{anomaly_L0}{Logical. }
+\item{anomaly_L0}{Logical. Boolean value informing if there is an anomaly on the L0 sensor.}
 
-\item{anomaly_L1}{Logical. }
+\item{anomaly_L1}{Logical. Boolean value informing if there is an anomaly on the L0 sensor.}
 
-\item{anomaly_L2}{Logical. }
+\item{anomaly_L2}{Logical. Boolean value informing if there is an anomaly on the L0 sensor.}
 
-\item{anomaly_R0}{Logical. }
+\item{anomaly_R0}{Logical. Boolean value informing if there is an anomaly on the L0 sensor.}
 
-\item{anomaly_R1}{Logical. }
+\item{anomaly_R1}{Logical. Boolean value informing if there is an anomaly on the L0 sensor.}
 
-\item{anomaly_R2}{Logical. }
+\item{anomaly_R2}{Logical. Boolean value informing if there is an anomaly on the L0 sensor.}
 }
 
 \value{named list of JSON elements corresponding to React.js properties and their values}

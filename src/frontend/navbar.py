@@ -2,12 +2,26 @@ import dash_bootstrap_components as dbc
 
 navbar = dbc.NavbarSimple(
     children=[
-        dbc.NavItem(dbc.NavLink("Live sensor measurements", href="/live")),
-        dbc.NavItem(dbc.NavLink("Last anomaly sensor measurements", href="/history")),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem(f"Patient {i}", href=f"/live/{i}") for i in range(1,7)
+            ],
+            nav=True,
+            in_navbar=True,
+            label="Live sensor measurements"
+        ),
+        dbc.DropdownMenu(
+            children=[
+                dbc.DropdownMenuItem(f"Patient {i}", href=f"/history/{i}") for i in range(1,7)
+            ],
+            nav=True,
+            in_navbar=True,
+            label="Last anomaly sensor measurements"
+        ),
     ],
     brand="Foot Sensor App",
     brand_href="/",
-    color="#023069",
+    color="#060c85",
     dark=True,
     fluid=True,
     links_left=True,

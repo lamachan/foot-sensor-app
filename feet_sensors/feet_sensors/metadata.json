@@ -1,6 +1,6 @@
 {
   "src/lib/components/FeetSensors.react.js": {
-    "description": "",
+    "description": "Custom component of 2 feet with 3 sensors on each foot.",
     "displayName": "FeetSensors",
     "methods": [],
     "props": {
@@ -9,91 +9,91 @@
           "name": "string"
         },
         "required": false,
-        "description": ""
+        "description": "Component ID."
       },
       "L0": {
         "type": {
           "name": "number"
         },
         "required": true,
-        "description": ""
+        "description": "Value of the L0 sensor."
       },
       "L1": {
         "type": {
           "name": "number"
         },
         "required": true,
-        "description": ""
+        "description": "Value of the L0 sensor."
       },
       "L2": {
         "type": {
           "name": "number"
         },
         "required": true,
-        "description": ""
+        "description": "Value of the L0 sensor."
       },
       "R0": {
         "type": {
           "name": "number"
         },
         "required": true,
-        "description": ""
+        "description": "Value of the L0 sensor."
       },
       "R1": {
         "type": {
           "name": "number"
         },
         "required": true,
-        "description": ""
+        "description": "Value of the L0 sensor."
       },
       "R2": {
         "type": {
           "name": "number"
         },
         "required": true,
-        "description": ""
+        "description": "Value of the L0 sensor."
       },
       "anomaly_L0": {
         "type": {
           "name": "bool"
         },
         "required": true,
-        "description": ""
+        "description": "Boolean value informing if there is an anomaly on the L0 sensor."
       },
       "anomaly_L1": {
         "type": {
           "name": "bool"
         },
         "required": true,
-        "description": ""
+        "description": "Boolean value informing if there is an anomaly on the L0 sensor."
       },
       "anomaly_L2": {
         "type": {
           "name": "bool"
         },
         "required": true,
-        "description": ""
+        "description": "Boolean value informing if there is an anomaly on the L0 sensor."
       },
       "anomaly_R0": {
         "type": {
           "name": "bool"
         },
         "required": true,
-        "description": ""
+        "description": "Boolean value informing if there is an anomaly on the L0 sensor."
       },
       "anomaly_R1": {
         "type": {
           "name": "bool"
         },
         "required": true,
-        "description": ""
+        "description": "Boolean value informing if there is an anomaly on the L0 sensor."
       },
       "anomaly_R2": {
         "type": {
           "name": "bool"
         },
         "required": true,
-        "description": ""
+        "description": "Boolean value informing if there is an anomaly on the L0 sensor."
       },
       "setProps": {
         "type": {

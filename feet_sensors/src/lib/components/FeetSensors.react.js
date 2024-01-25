@@ -1,17 +1,32 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
+function mapValueToRadius(value) {
+    const minValue = 0;
+    const maxValue = 1023;
+    const minRadius = 70;
+    const maxRadius = 110;
 
+    const clampedValue = Math.min(Math.max(value, minValue), maxValue);
+
+    const mappedRadius = minRadius + ((clampedValue - minValue) / (maxValue - minValue)) * (maxRadius - minRadius);
+  
+    return mappedRadius;
+}
+
+/**
+ * Custom component of 2 feet with 3 sensors on each foot.
+ */
 const FeetSensors = (props) => {
     const {id, L0, L1, L2, R0, R1, R2, anomaly_L0, anomaly_L1, anomaly_L2, anomaly_R0, anomaly_R1, anomaly_R2} = props;
 
     return (
         <div id={id}>
             <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
-            width="250.000000pt" height="250.000000pt" viewBox="0 0 1079.000000 1280.000000"
+            width="150.000000pt" height="150.000000pt" viewBox="0 0 1179.000000 1290.000000"
             preserveAspectRatio="xMidYMid meet">
             <g transform="translate(0.000000,1280.000000) scale(0.100000,-0.100000)"
-            fill="#000000" stroke="none">
+            fill="none" stroke="#000000" stroke-width="50">
             <path d="M3825 12772 c-99 -33 -164 -74 -238 -149 -76 -78 -101 -113 -151
             -213 -77 -153 -113 -294 -123 -480 -9 -188 18 -347 87 -495 89 -193 222 -308
             408 -356 200 -51 397 5 547 156 154 156 225 358 225 644 0 273 -67 494 -206
@@ -61,28 +76,28 @@ const FeetSensors = (props) => {
             -152 111 -242 69z"/>
             </g>
             <g>
-            <circle cx="350" cy="350" r="60" fill={anomaly_L0 ? 'red' : 'blue'} />
-            <text x="350" y="350" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{L0}</text>
+            <circle cx="350" cy="350" r={mapValueToRadius(L0)} fill={anomaly_L0 ? '#bf0912' : '#0912bf'} />
+            <text x="350" y="350" text-anchor="middle" dy=".3em" fill="white" font-size="80">{L0}</text>
             </g>
             <g>
-            <circle cx="130" cy="450" r="60" fill={anomaly_L1 ? 'red' : 'blue'} />
-            <text x="130" y="450" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{L1}</text>
+            <circle cx="130" cy="450" r={mapValueToRadius(L1)} fill={anomaly_L1 ? '#bf0912' : '#0912bf'} />
+            <text x="130" y="450" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="80">{L1}</text>
             </g>
             <g>
-            <circle cx="300" cy="1100" r="60" fill={anomaly_L2 ? 'red' : 'blue'} />
-            <text x="300" y="1110" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{L2}</text>
+            <circle cx="300" cy="1100" r={mapValueToRadius(L2)} fill={anomaly_L2 ? '#bf0912' : '#0912bf'} />
+            <text x="300" y="1110" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="80">{L2}</text>
             </g>
             <g>
-            <circle cx="720" cy="350" r="60" fill={anomaly_R0 ? 'red' : 'blue'} />
-            <text x="720" y="350" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{R0}</text>
+            <circle cx="720" cy="350" r={mapValueToRadius(R0)} fill={anomaly_R0 ? '#bf0912' : '#0912bf'} />
+            <text x="720" y="350" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="80">{R0}</text>
             </g>
             <g>
-            <circle cx="950" cy="450" r="60" fill={anomaly_R1 ? 'red' : 'blue'} />
-            <text x="950" y="450" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{R1}</text>
+            <circle cx="950" cy="450" r={mapValueToRadius(R1)} fill={anomaly_R1 ? '#bf0912' : '#0912bf'} />
+            <text x="950" y="450" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="80">{R1}</text>
             </g>
             <g>
-            <circle cx="770" cy="1100" r="60" fill={anomaly_R2 ? 'red' : 'blue'} />
-            <text x="770" y="1110" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="50">{R2}</text>
+            <circle cx="770" cy="1100" r={mapValueToRadius(R2)} fill={anomaly_R2 ? '#bf0912' : '#0912bf'} />
+            <text x="770" y="1110" text-anchor="middle" alignment-baseline="middle" fill="white" font-size="80">{R2}</text>
             </g>
             </svg>
             
@@ -94,21 +109,61 @@ const FeetSensors = (props) => {
 FeetSensors.defaultProps = {};
 
 FeetSensors.propTypes = {
+    /**
+     * Component ID.
+     */
     id: PropTypes.string,
-    
+
+    /**
+     * Value of the L0 sensor.
+     */
     L0: PropTypes.number.isRequired,
+    /**
+     * Value of the L0 sensor.
+     */
     L1: PropTypes.number.isRequired,
+    /**
+     * Value of the L0 sensor.
+     */
     L2: PropTypes.number.isRequired,
+    /**
+     * Value of the L0 sensor.
+     */
     R0: PropTypes.number.isRequired,
+    /**
+     * Value of the L0 sensor.
+     */
     R1: PropTypes.number.isRequired,
+    /**
+     * Value of the L0 sensor.
+     */
     R2: PropTypes.number.isRequired,
 
+    /**
+     * Boolean value informing if there is an anomaly on the L0 sensor.
+     */
     anomaly_L0: PropTypes.bool.isRequired,
+    /**
+     * Boolean value informing if there is an anomaly on the L0 sensor.
+     */
     anomaly_L1: PropTypes.bool.isRequired,
+    /**
+     * Boolean value informing if there is an anomaly on the L0 sensor.
+     */
     anomaly_L2: PropTypes.bool.isRequired,
+    /**
+     * Boolean value informing if there is an anomaly on the L0 sensor.
+     */
     anomaly_R0: PropTypes.bool.isRequired,
+    /**
+     * Boolean value informing if there is an anomaly on the L0 sensor.
+     */
     anomaly_R1: PropTypes.bool.isRequired,
+    /**
+     * Boolean value informing if there is an anomaly on the L0 sensor.
+     */
     anomaly_R2: PropTypes.bool.isRequired,
+    
     /**
      * Dash-assigned callback that should be called to report property changes
      * to Dash, to make them available for callbacks.

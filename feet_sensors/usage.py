@@ -6,12 +6,12 @@ app = Dash(__name__)
 app.layout = html.Div([
     feet_sensors.FeetSensors(
         id='feet-sensors',
-        L0=0,
-        L1=30,
+        L0=1023,
+        L1=1023,
         L2=100,
-        R0=2,
-        R1=55,
-        R2=1000,
+        R0=0,
+        R1=10,
+        R2=655,
         anomaly_L0=False,
         anomaly_L1=True,
         anomaly_L2=False,

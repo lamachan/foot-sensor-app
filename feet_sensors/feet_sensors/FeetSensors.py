@@ -5,35 +5,48 @@ from dash.development.base_component import Component, _explicitize_args
 
 class FeetSensors(Component):
     """A FeetSensors component.
-
+Custom component of 2 feet with 3 sensors on each foot.
 
 Keyword arguments:
 
-- id (string; optional)
+- id (string; optional):
+    Component ID.
 
-- L0 (number; required)
+- L0 (number; required):
+    Value of the L0 sensor.
 
-- L1 (number; required)
+- L1 (number; required):
+    Value of the L0 sensor.
 
-- L2 (number; required)
+- L2 (number; required):
+    Value of the L0 sensor.
 
-- R0 (number; required)
+- R0 (number; required):
+    Value of the L0 sensor.
 
-- R1 (number; required)
+- R1 (number; required):
+    Value of the L0 sensor.
 
-- R2 (number; required)
+- R2 (number; required):
+    Value of the L0 sensor.
 
-- anomaly_L0 (boolean; required)
+- anomaly_L0 (boolean; required):
+    Boolean value informing if there is an anomaly on the L0 sensor.
 
-- anomaly_L1 (boolean; required)
+- anomaly_L1 (boolean; required):
+    Boolean value informing if there is an anomaly on the L0 sensor.
 
-- anomaly_L2 (boolean; required)
+- anomaly_L2 (boolean; required):
+    Boolean value informing if there is an anomaly on the L0 sensor.
 
-- anomaly_R0 (boolean; required)
+- anomaly_R0 (boolean; required):
+    Boolean value informing if there is an anomaly on the L0 sensor.
 
-- anomaly_R1 (boolean; required)
+- anomaly_R1 (boolean; required):
+    Boolean value informing if there is an anomaly on the L0 sensor.
 
-- anomaly_R2 (boolean; required)"""
+- anomaly_R2 (boolean; required):
+    Boolean value informing if there is an anomaly on the L0 sensor."""
     _children_props = []
     _base_nodes = ['children']
     _namespace = 'feet_sensors'

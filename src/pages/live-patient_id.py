@@ -3,10 +3,10 @@ from dash import html, dcc, callback, Input, Output, State
 import redis
 import json
 import pandas as pd
-import feet_sensors
+from feet_sensors import FeetSensors
 
 import dash_bootstrap_components as dbc
-from frontend import navbar, navbar2
+from frontend import navbar, navbar_live
 
 def title(patient_id=None):
     return f'Patient {patient_id} - live'
@@ -28,13 +28,13 @@ def layout(patient_id=None):
     return html.Div([
         dcc.Location(id='url', refresh=False),
         navbar.navbar,
-        navbar2.navbar,
+        # navbar_live.navbar,
 
         dbc.Container(fluid=True, children=[
             dbc.Row([
                 load_patient_data(patient_id),
                 dbc.Col([
-                    feet_sensors.FeetSensors(
+                    FeetSensors(
                         id='feet-sensors',
                         L0=0,
                         L1=0,
@@ -56,30 +56,30 @@ def layout(patient_id=None):
                 dbc.Col([
                     dcc.Graph(
                         id='L0-live-graph',
-                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='L1-live-graph',
-                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='L2-live-graph',
-                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                 ], width=6),
 
                 dbc.Col([
                     dcc.Graph(
                         id='R0-live-graph',
-                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='R1-live-graph',
-                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='R2-live-graph',
-                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                 ], width=6),
             ], style={'margin-bottom': '10px'}),
@@ -89,8 +89,8 @@ def layout(patient_id=None):
                 interval=1000,
                 n_intervals=0
             )
-        ], style={'height': '70vh'})
-    ])#, style={'width': '100vw', 'height': '100vh'})
+        ], style={'height': '80vh'})
+    ], style={'height': '80vh'})
     
 def load_patient_data(patient_id):
     data = fetch_all_data(patient_id)
@@ -117,10 +117,16 @@ def load_patient_data(patient_id):
     
     return dbc.Col([
         dcc.Store(id='patient-data-store', data=json_data),
-        html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
-        html.P(f"Birth year: {data[0]['data']['birthdate']}"),
-        html.P(f"Disability: {data[0]['data']['disabled']}")
-    ], width=6) if data else dbc.Col(html.Div("Patient information not found."))
+        html.P([
+            html.Strong("Name: "), f"{data[0]['data']['firstname']} {data[0]['data']['lastname']}",
+        ], style={'fontSize': '20px'}),
+        html.P([
+            html.Strong("Birth year: "), f"{data[0]['data']['birthdate']}",
+        ], style={'fontSize': '20px'}),
+        html.P([
+            html.Strong("Disability: "), f"{data[0]['data']['disabled']}",
+        ], style={'fontSize': '20px'}),
+    ], width=6, style={'margin': 'auto'}) if data else dbc.Col(html.Div("Patient information not found."))
 
 
 def fetch_all_data(patient_id):
@@ -207,6 +213,7 @@ def update_graph(n, pathname, patient_data):
                             'type': 'scatter',
                             'mode': 'lines',
                             'name': f'{sensor} (Normal)',
+                            'line': {'color': '#0912bf'},
                             'showlegend': False
                         }
 
@@ -233,7 +240,7 @@ def update_graph(n, pathname, patient_data):
                             'type': 'scatter',
                             'mode': 'lines',
                             'name': f'{sensor} (Anomaly)',
-                            'line': {'color': 'red', 'width': 2},
+                            'line': {'color': '#bf0912', 'width': 2},
                             'showlegend': False
                         }
                 anomaly_traces.append(trace)
@@ -246,14 +253,16 @@ def update_graph(n, pathname, patient_data):
                     title='Time',
                     tickmode='auto',
                     nticks=10,
-                    tickfont=dict(size=8)
+                    tickfont=dict(size=8),
+                    titlefont=dict(size=10)
                 ),
                 'yaxis': dict(
                     title='Pressure',
-                    range=[0,1100]
+                    range=[0,1100],
+                    tickfont=dict(size=8),
+                    titlefont=dict(size=10),
                 ),
-                'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},
-                'height': 200,
+                'margin': {'l': 40, 'r': 40, 't': 40, 'b': 40},
                 'uirevision': True
             }
         }

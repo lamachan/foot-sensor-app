@@ -4,7 +4,7 @@ import redis
 import json
 import pandas as pd
 import dash_bootstrap_components as dbc
-from frontend import navbar, navbar3
+from frontend import navbar, navbar_history
 
 def title(patient_id=None):
     return f'Patient {patient_id} - history'
@@ -26,7 +26,7 @@ def layout(patient_id=None):
     return html.Div([
 
         navbar.navbar,
-        navbar3.navbar,
+        # navbar_history.navbar,
 
         dcc.Location(id='url', refresh=False),
         dcc.Store('memory'),
@@ -55,47 +55,54 @@ def load_patient_data(patient_id):
         return dbc.Container(fluid=True, children=[
 
             dbc.Row([
-                html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
-                html.P(f"Birth year: {data[0]['data']['birthdate']}"),
-                html.P(f"Disability: {data[0]['data']['disabled']}"),
-                html.P(id='anomaly-date'),
+                 html.P([
+                    html.Strong("Name: "), f"{data[0]['data']['firstname']} {data[0]['data']['lastname']}",
+                ], style={'fontSize': '20px'}),
+                html.P([
+                    html.Strong("Birth year: "), f"{data[0]['data']['birthdate']}",
+                ], style={'fontSize': '20px'}),
+                html.P([
+                    html.Strong("Disability: "), f"{data[0]['data']['disabled']}",
+                ], style={'fontSize': '20px'}),
+                html.P(id='anomaly-date', style={'fontSize': '20px'}),
             ]),
                 
-            dbc.Button("Newest", color="primary", className="me-1", id='newest-button', n_clicks=0, disabled=True),
-            dbc.Button("Newer", color="primary", className="me-1", id='newer-button', n_clicks=0, disabled=True),
-            dbc.Button("Older", color="primary", className="me-1", id='older-button', n_clicks=0),
-            dbc.Button("Oldest", color="primary", className="me-1", id='oldest-button', n_clicks=0),
+            dbc.Button("Newest", style={'background-color': "#060c85"}, className="me-1", id='newest-button', n_clicks=0, disabled=True),
+            dbc.Button("Newer", style={'background-color': "#060c85"}, className="me-1", id='newer-button', n_clicks=0, disabled=True),
+            dbc.Button("Older", style={'background-color': "#060c85"}, className="me-1", id='older-button', n_clicks=0),
+            dbc.Button("Oldest", style={'background-color': "#060c85"}, className="me-1", id='oldest-button', n_clicks=0),
 
             dbc.Row([
                 dbc.Col([ 
                     dcc.Graph(
                         id='L0-anomaly-graph',
-                        style={'width': '100%', 'height': '200px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='L1-anomaly-graph',
-                        style={'width': '100%', 'height': '200px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='L2-anomaly-graph',
-                        style={'width': '100%', 'height': '200px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
-                ]),
+                ], width=6),
+
                 dbc.Col([
                     dcc.Graph(
                         id='R0-anomaly-graph',
-                        style={'width': '100%', 'height': '200px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='R1-anomaly-graph',
-                        style={'width': '100%', 'height': '200px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
                     dcc.Graph(
                         id='R2-anomaly-graph',
-                        style={'width': '100%', 'height': '200px'}
+                        style={'width': '100%', 'height': '18vh', 'margin-bottom': '10px'}
                     ),
-                ])
-            ])
+                ], width=6)
+            ], style={'margin-bottom': '10px'})
         ])
     else:
         return html.Div(f'No history of anomalies found for patient {patient_id}.')
@@ -158,7 +165,7 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
     streak_data = df[df['streak_id'] == data['current_streak_id']]
     #print(streak_data)
 
-    anomaly_date = f"Anomaly date: {streak_data.iloc[0]['date']}"
+    anomaly_date = [html.Strong("Anomaly date: "), f"{streak_data.iloc[0]['date']}"]
 
     updated_figures = []
     for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
@@ -169,23 +176,26 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
                 'type': 'scatter',
                 'mode': 'lines',
                 'name': f'{sensor} (Anomaly)',
-                'line': {'color': 'red', 'width': 2},
+                'line': {'color': 'bf0912', 'width': 2},
                 'showlegend': False
             }],
             'layout': {
                 'title': f'{sensor}',
                 'xaxis': dict(
-                        title='Time',
-                        tickmode='auto',
-                        nticks=10,
-                        tickfont=dict(size=8)
-                    ),
+                    title='Time',
+                    tickmode='auto',
+                    nticks=10,
+                    tickfont=dict(size=8),
+                    titlefont=dict(size=10)
+                ),
                 'yaxis': dict(
                     title='Pressure',
-                    range=[0,1100]
+                    range=[0,1100],
+                    tickfont=dict(size=8),
+                    titlefont=dict(size=10),
                 ),
-                'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},
-                'height': 200
+                'margin': {'l': 40, 'r': 40, 't': 40, 'b': 40},
+                'uirevision': True
             }
         }
         updated_figures.append(fig)
