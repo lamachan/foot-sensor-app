@@ -23,10 +23,12 @@ def layout(patient_id=None):
             f'Patient ID: {patient_id} is invalid.'
         )
 
-    return dbc.Container(fluid=True, children=[
+    return html.Div([
+
         navbar.navbar,
         navbar3.navbar,
 
+        dcc.Location(id='url', refresh=False),
         dcc.Store('memory'),
 
         load_patient_data(patient_id)
@@ -50,11 +52,9 @@ def load_patient_data(patient_id):
         patient_data[patient_id] = pd.DataFrame(row_list, columns='streak_id date time firstname lastname trace_id L0 L1 L2 R0 R1 R2'.split())
         print(patient_data[patient_id])
         
-        return html.Div([
-            dcc.Location(id='url', refresh=False),
+        return dbc.Container(fluid=True, children=[
 
             dbc.Row([
-                html.P(f"Patient ID: {patient_id}"),
                 html.P(f"Name: {data[0]['data']['firstname']} {data[0]['data']['lastname']}"),
                 html.P(f"Birth year: {data[0]['data']['birthdate']}"),
                 html.P(f"Disability: {data[0]['data']['disabled']}"),
@@ -96,7 +96,6 @@ def load_patient_data(patient_id):
                     ),
                 ])
             ])
-
         ])
     else:
         return html.Div(f'No history of anomalies found for patient {patient_id}.')
@@ -177,13 +176,12 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
                 'title': f'{sensor}',
                 'xaxis': dict(
                         title='Time',
-                        tickangle=45,
                         tickmode='auto',
                         nticks=10,
                         tickfont=dict(size=8)
                     ),
                 'yaxis': dict(
-                    title='Value',
+                    title='Pressure',
                     range=[0,1100]
                 ),
                 'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},

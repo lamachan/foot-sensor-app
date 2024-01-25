@@ -25,67 +25,72 @@ def layout(patient_id=None):
             f'Patient ID: {patient_id} is invalid.'
         )
 
-    return dbc.Container(fluid=True, children=[
+    return html.Div([
         dcc.Location(id='url', refresh=False),
         navbar.navbar,
         navbar2.navbar,
 
-        load_patient_data(patient_id),
+        dbc.Container(fluid=True, children=[
+            dbc.Row([
+                load_patient_data(patient_id),
+                dbc.Col([
+                    feet_sensors.FeetSensors(
+                        id='feet-sensors',
+                        L0=0,
+                        L1=0,
+                        L2=0,
+                        R0=0,
+                        R1=0,
+                        R2=0,
+                        anomaly_L0=False,
+                        anomaly_L1=False,
+                        anomaly_L2=False,
+                        anomaly_R0=False,
+                        anomaly_R1=False,
+                        anomaly_R2=False
+                    ),
+                ])
+            ], style={'margin-top': '10px', 'margin-bottom': '10px'}),
 
-        dbc.Row([
-            dbc.Col([
-                dcc.Graph(
-                    id='L0-live-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='L1-live-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='L2-live-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-            ], width=6),
+            dbc.Row([
+                dbc.Col([
+                    dcc.Graph(
+                        id='L0-live-graph',
+                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                    ),
+                    dcc.Graph(
+                        id='L1-live-graph',
+                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                    ),
+                    dcc.Graph(
+                        id='L2-live-graph',
+                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                    ),
+                ], width=6),
 
-            dbc.Col([
-                dcc.Graph(
-                    id='R0-live-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='R1-live-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-                dcc.Graph(
-                    id='R2-live-graph',
-                    style={'width': '100%', 'height': '200px'}
-                ),
-            ], width=6),
-        ]),
+                dbc.Col([
+                    dcc.Graph(
+                        id='R0-live-graph',
+                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                    ),
+                    dcc.Graph(
+                        id='R1-live-graph',
+                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                    ),
+                    dcc.Graph(
+                        id='R2-live-graph',
+                        style={'width': '100%', 'height': '20vh', 'margin-bottom': '10px'}
+                    ),
+                ], width=6),
+            ], style={'margin-bottom': '10px'}),
 
-        feet_sensors.FeetSensors(
-            id='feet-sensors',
-            L0=0,
-            L1=0,
-            L2=0,
-            R0=0,
-            R1=0,
-            R2=0,
-            anomaly_L0=False,
-            anomaly_L1=False,
-            anomaly_L2=False,
-            anomaly_R0=False,
-            anomaly_R1=False,
-            anomaly_R2=False
-        ),
-
-        dcc.Interval(
-            id='interval-component',
-            interval=1000,
-            n_intervals=0
-        )
-    ])
+            dcc.Interval(
+                id='interval-component',
+                interval=1000,
+                n_intervals=0
+            )
+        ], style={'height': '70vh'})
+    ])#, style={'width': '100vw', 'height': '100vh'})
     
 def load_patient_data(patient_id):
     data = fetch_all_data(patient_id)
@@ -239,13 +244,12 @@ def update_graph(n, pathname, patient_data):
                 'title': f'{sensor}',
                 'xaxis': dict(
                     title='Time',
-                    tickangle=45,
                     tickmode='auto',
                     nticks=10,
                     tickfont=dict(size=8)
                 ),
                 'yaxis': dict(
-                    title='Value',
+                    title='Pressure',
                     range=[0,1100]
                 ),
                 'margin': {'l': 40, 'r': 10, 't': 40, 'b': 40},
