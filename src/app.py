@@ -24,8 +24,6 @@ def fetch_data_from_api(api_url, redis_client, next_anomaly_streak_id, previous_
             
             data = response.json()
             timestamped_data = {'time': str(datetime.now().strftime('%H:%M:%S')), 'data': data}
-            if patient_id == '1':
-                print(timestamped_data['time'])
             
             redis_client.rpush(f'patient-{patient_id}-data', json.dumps(timestamped_data))
             redis_client.ltrim(f'patient-{patient_id}-data', -600, -1)
