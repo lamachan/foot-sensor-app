@@ -15,6 +15,7 @@ app.layout = html.Div([
     dash.page_container
 ])
 
+# fetching data for 1 patient every 1 second and storing it in redis lists
 def fetch_data_from_api(api_url, redis_client, next_anomaly_streak_id, previous_anomaly):
     while True:
         try:
@@ -29,6 +30,7 @@ def fetch_data_from_api(api_url, redis_client, next_anomaly_streak_id, previous_
             redis_client.rpush(f'patient-{patient_id}-data', json.dumps(timestamped_data))
             redis_client.ltrim(f'patient-{patient_id}-data', -600, -1)
 
+            # detect anomaly trace
             anomalies = [s['anomaly'] for s in data['trace']['sensors']]
             if any(anomalies):
                 if not previous_anomaly:
@@ -50,6 +52,7 @@ def fetch_data_from_api(api_url, redis_client, next_anomaly_streak_id, previous_
             time.sleep(1)
 
 if __name__ == '__main__':
+    # prepare redis DB
     redis_host = 'localhost'
     redis_port = 6379
     redis_client = redis.StrictRedis(host=redis_host, port=redis_port)
@@ -68,9 +71,7 @@ if __name__ == '__main__':
 
         previous_anomaly[patient_id] = False
 
-    print(next_anomaly_streak_id)
-    print(previous_anomaly)
-
+    # set up threads for each patient
     threads = []
     for patient_id in range(1, 7):
         thread = threading.Thread(target=fetch_data_from_api, args=(

@@ -11,32 +11,30 @@ layout = html.Div(children=[
     dbc.Container(
         fluid=True,
         children=[
-            dbc.Row(
-                [
-                    dbc.Col([
-                        html.H1('Foot Sensor App'),
-                        html.P("Authors: Daria Danieluk, Weronika Zbierowska")
-                    ], width={"size": 6, "offset": 3}, style={"textAlign": "center"})
-                ]),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        FeetSensors(
-                            id='example-feet-sensors',
-                            L0=1023,
-                            L1=634,
-                            L2=2,
-                            R0=55,
-                            R1=63,
-                            R2=977,
-                            anomaly_L0=False,
-                            anomaly_L1=False,
-                            anomaly_L2=False,
-                            anomaly_R0=True,
-                            anomaly_R1=True,
-                            anomaly_R2=True
-                        ), width='auto'),
-                ], justify="center"),
+            dbc.Row([
+                dbc.Col([
+                    html.H1('Foot Sensor App'),
+                    html.P("Authors: Daria Danieluk, Weronika Zbierowska")
+                ], width={"size": 6, "offset": 3}, style={"textAlign": "center"})
+            ]),
+            dbc.Row([
+                dbc.Col(
+                    FeetSensors(
+                        id='example-feet-sensors',
+                        L0=1023,
+                        L1=634,
+                        L2=2,
+                        R0=55,
+                        R1=63,
+                        R2=977,
+                        anomaly_L0=False,
+                        anomaly_L1=False,
+                        anomaly_L2=False,
+                        anomaly_R0=True,
+                        anomaly_R1=True,
+                        anomaly_R2=True
+                    ), width='auto'),
+            ], justify="center"),
         ]
     )
 ])

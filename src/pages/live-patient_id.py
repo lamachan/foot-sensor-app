@@ -25,6 +25,7 @@ def layout(patient_id=None):
             f'Patient ID: {patient_id} is invalid.'
         )
 
+    # valid patient_id
     return html.Div([
         dcc.Location(id='url', refresh=False),
 
@@ -92,6 +93,7 @@ def layout(patient_id=None):
         ], style={'height': '80vh'})
     ], style={'height': '80vh'})
     
+# load patient's personal information and all avaliable data from a redis list
 def load_patient_data(patient_id):
     data = fetch_all_data(patient_id)
     
@@ -111,8 +113,6 @@ def load_patient_data(patient_id):
             for row in data
         ]
         df = pd.DataFrame(row_list, columns='time firstname lastname trace_id_id trace_id_date anomaly_L0 anomaly_L1 anomaly_L2 anomaly_R0 anomaly_R1 anomaly_R2 L0 L1 L2 R0 R1 R2'.split())
-        print('FETCHED ALL DATA')
-        print(df)
         json_data = df.to_json(orient='split')
     
     return dbc.Col([
@@ -128,7 +128,7 @@ def load_patient_data(patient_id):
         ], style={'fontSize': '20px'}),
     ], width=6, style={'margin': 'auto'}) if data else dbc.Col(html.Div("Patient information not found."))
 
-
+# fetch all data avaliable in the redis list
 def fetch_all_data(patient_id):
     data_key = f'patient-{patient_id}-data'
     all_data = redis_client.lrange(data_key, 0, -1)
@@ -137,6 +137,7 @@ def fetch_all_data(patient_id):
         return parsed_data
     return None
 
+# fetch the newest data record from a redis list
 def fetch_new_data(patient_id):
     data_key = f'patient-{patient_id}-data'
     latest_data = redis_client.lindex(data_key, -1)
@@ -144,6 +145,7 @@ def fetch_new_data(patient_id):
         return json.loads(latest_data)
     return None
 
+# update the graphs and the feet diagram every 1 second
 @callback(
     [Output('L0-live-graph', 'figure'),
     Output('L1-live-graph', 'figure'),
@@ -164,14 +166,16 @@ def fetch_new_data(patient_id):
     Output('feet-sensors', 'R1'),
     Output('feet-sensors', 'R2'),
     Output('patient-data-store', 'data')],
+
     [Input('interval-component', 'n_intervals')],
+
     [State('url', 'pathname'),
     State('patient-data-store', 'data')]
 )
 def update_graph(n, pathname, patient_data):
-    print(f'Entering the callback function., n={n}')
     patient_id = int(pathname.split('/')[-1])
 
+    # update patient_data Store
     if patient_data:
         if n > 0:
             data = fetch_new_data(patient_id)
@@ -195,7 +199,6 @@ def update_graph(n, pathname, patient_data):
                 if len(df) > 600:
                     rows_to_remove = len(df) - 600
                     df = df.iloc[rows_to_remove:]
-                print(df)
 
                 patient_data = df.to_json(orient='split')
             else:
@@ -205,6 +208,7 @@ def update_graph(n, pathname, patient_data):
     else:
         return [{'data': [], 'layout': {}}] * 6, [False] * 6, [0] * 6, patient_data
 
+    # update graphs
     updated_figures = []
     for sensor in ['L0', 'L1', 'L2', 'R0', 'R1', 'R2']:
         all_data_trace = {
@@ -217,6 +221,7 @@ def update_graph(n, pathname, patient_data):
                             'showlegend': False
                         }
 
+        # split anomaly traces
         anomaly_indices = df[df[f'anomaly_{sensor}'] == True].index.tolist()
         anomaly_traces = []
 
@@ -268,6 +273,7 @@ def update_graph(n, pathname, patient_data):
         }
         updated_figures.append(fig)
 
-        anomaly_L0, anomaly_L1, anomaly_L2, anomaly_R0, anomaly_R1, anomaly_R2, L0, L1, L2, R0, R1, R2 = df.iloc[-1, 5:].values
+    # update feet diagram
+    anomaly_L0, anomaly_L1, anomaly_L2, anomaly_R0, anomaly_R1, anomaly_R2, L0, L1, L2, R0, R1, R2 = df.iloc[-1, 5:].values
 
     return *updated_figures, anomaly_L0, anomaly_L1, anomaly_L2, anomaly_R0, anomaly_R1, anomaly_R2, L0, L1, L2, R0, R1, R2, patient_data

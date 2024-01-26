@@ -23,6 +23,7 @@ def layout(patient_id=None):
             f'Patient ID: {patient_id} is invalid.'
         )
 
+    # valid patient_id
     return html.Div([
 
         navbar.navbar,
@@ -33,6 +34,7 @@ def layout(patient_id=None):
         load_patient_data(patient_id)
     ])
     
+# load patient's personal information and all avaliable anomaly data from a redis list
 def load_patient_data(patient_id):
     data = fetch_anomaly_data(patient_id)
     
@@ -49,7 +51,6 @@ def load_patient_data(patient_id):
             for row in data
         ]
         patient_data[patient_id] = pd.DataFrame(row_list, columns='streak_id date time firstname lastname trace_id L0 L1 L2 R0 R1 R2'.split())
-        print(patient_data[patient_id])
         
         return dbc.Container(fluid=True, children=[
 
@@ -106,6 +107,7 @@ def load_patient_data(patient_id):
     else:
         return html.Div(f'No history of anomalies found for patient {patient_id}.')
 
+# fetch all anomaly data avaliable in the redis list
 def fetch_anomaly_data(patient_id):
     data_key = f'patient-{patient_id}-anomalies'
     data = redis_client.lrange(data_key, 0, -1)
@@ -114,6 +116,7 @@ def fetch_anomaly_data(patient_id):
         return parsed_data
     return None
 
+# update the graphs based on the pressed button
 @callback(
     Output('anomaly-date', 'children'),
     Output('L0-anomaly-graph', 'figure'),
@@ -162,7 +165,6 @@ def update_graph(newest_clicks, newer_clicks, older_clicks, oldest_clicks, figur
     buttons_disabled = [newest_diabled, newer_diabled, older_diabled, oldest_diabled]
 
     streak_data = df[df['streak_id'] == data['current_streak_id']]
-    #print(streak_data)
 
     anomaly_date = [html.Strong("Anomaly date: "), f"{streak_data.iloc[0]['date']}"]
 
