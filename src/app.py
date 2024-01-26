@@ -83,4 +83,4 @@ if __name__ == '__main__':
     for thread in threads:
         thread.start()
 
-    app.run_server(debug=False)
+    app.run_server(debug=False, host="0.0.0.0", port=8080)
